@@ -39,9 +39,9 @@
 # New Feature Requests
 
 ## UI 优化
-- [ ] 主题切换改为单个图标+下拉选择模式（Light/Dark/Tech）→ 提交到 GitHub
-- [ ] 右上角 GitHub 图标改为实色背景 → 提交到 GitHub
-- [ ] 登录后右上角只显示用户头像，点击头像显示设置等操作的下拉框 → 提交到 GitHub
+- [x] 主题切换改为单个图标+下拉选择模式（Light/Dark/Tech）→ 提交到 GitHub
+- [x] 右上角 GitHub 图标改为实色背景 → 提交到 GitHub
+- [x] 登录后右上角只显示用户头像，点击头像显示设置等操作的下拉框 → 提交到 GitHub
 
 ## 数据库与数据
 - [ ] 创建 skill_reviews 评价表（评分+评论）→ 提交到 GitHub

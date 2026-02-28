@@ -309,3 +309,32 @@ export const agentSkills = mysqlTable("agent_skills", {
 });
 
 export type AgentSkill = typeof agentSkills.$inferSelect;
+
+// ============================================================================
+// SKILL REVIEWS (ratings + comments)
+// ============================================================================
+export const skillReviews = mysqlTable("skill_reviews", {
+  id: int("id").autoincrement().primaryKey(),
+  skillId: int("skillId").notNull(),
+  userId: int("userId").notNull(),
+  rating: int("rating").notNull().default(5),
+  comment: text("comment"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type SkillReview = typeof skillReviews.$inferSelect;
+export type InsertSkillReview = typeof skillReviews.$inferInsert;
+
+// ============================================================================
+// SKILL FORKS
+// ============================================================================
+export const skillForks = mysqlTable("skill_forks", {
+  id: int("id").autoincrement().primaryKey(),
+  originalSkillId: int("originalSkillId").notNull(),
+  forkedSkillId: int("forkedSkillId").notNull(),
+  userId: int("userId").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type SkillFork = typeof skillForks.$inferSelect;

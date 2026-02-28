@@ -15,7 +15,7 @@ import {
   FileText, Folder, ChevronRight, Clock, Tag, Share2,
   Code2, Terminal, AlertCircle, Bookmark, BookmarkCheck,
   ChevronDown, File, FolderOpen, ExternalLink, Loader2,
-  Twitter, Linkedin, Facebook, Link2
+  Twitter, Linkedin, Facebook, Link2, Star, Send
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
@@ -193,6 +193,10 @@ export default function SkillDetail() {
   const [copied, setCopied] = useState(false);
   const [selectedFile, setSelectedFile] = useState<FileNode | null>(null);
 
+  const [reviewRating, setReviewRating] = useState(5);
+  const [reviewComment, setReviewComment] = useState('');
+  const [hoverRating, setHoverRating] = useState(0);
+
   const { user, isAuthenticated } = useAuth();
 
   // Fetch skill data from tRPC
@@ -219,6 +223,28 @@ export default function SkillDetail() {
     { enabled: !!skill?.id }
   );
 
+  // Fetch reviews
+  const { data: reviewsData } = trpc.reviews.list.useQuery(
+    { skillId: skill?.id || 0 },
+    { enabled: !!skill?.id }
+  );
+  const { data: ratingData } = trpc.reviews.rating.useQuery(
+    { skillId: skill?.id || 0 },
+    { enabled: !!skill?.id }
+  );
+
+  // Fetch related skills
+  const skillTags = useMemo(() => {
+    if (!skill?.tags) return null;
+    try {
+      return typeof skill.tags === 'string' ? JSON.parse(skill.tags) : skill.tags;
+    } catch { return null; }
+  }, [skill?.tags]);
+  const { data: relatedSkillsData } = trpc.skills.related.useQuery(
+    { skillId: skill?.id || 0, categoryId: skill?.categoryId || null, tags: skillTags, limit: 6 },
+    { enabled: !!skill?.id }
+  );
+
   // Check favorite status
   const { data: isFav } = trpc.favorites.check.useQuery(
     { targetType: 'skill', targetId: skill?.id || 0 },
@@ -237,6 +263,23 @@ export default function SkillDetail() {
       utils.favorites.check.invalidate({ targetType: 'skill', targetId: skill?.id || 0 });
       toast.success('Removed from favorites');
     },
+  });
+  const createReviewMutation = trpc.reviews.create.useMutation({
+    onSuccess: () => {
+      utils.reviews.list.invalidate({ skillId: skill?.id || 0 });
+      utils.reviews.rating.invalidate({ skillId: skill?.id || 0 });
+      setReviewComment('');
+      setReviewRating(5);
+      toast.success('Review submitted!');
+    },
+    onError: () => toast.error('Failed to submit review'),
+  });
+  const forkMutation = trpc.skills.fork.useMutation({
+    onSuccess: (data) => {
+      toast.success('Skill forked successfully!');
+      window.location.href = `/skills/${user?.name || 'user'}/${data.slug}`;
+    },
+    onError: () => toast.error('Failed to fork skill'),
   });
 
   const fileTree = useMemo(() => buildFileTree(filesData || []), [filesData]);
@@ -401,9 +444,18 @@ export default function SkillDetail() {
                 {isFav ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
                 {isFav ? 'Saved' : 'Save'}
               </Button>
-              <Button variant="outline" size="sm" onClick={() => toast.info('Feature coming soon')} className="gap-1.5">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  if (!isAuthenticated) { toast.error('Please log in to fork'); return; }
+                  forkMutation.mutate({ skillId: skill.id });
+                }}
+                disabled={forkMutation.isPending}
+                className="gap-1.5"
+              >
                 <GitBranch className="w-4 h-4" />
-                Fork
+                {forkMutation.isPending ? 'Forking...' : `Fork (${formatNumber(skill.forks ?? 0)})`}
               </Button>
               <ShareMenu author={author || ''} name={name || ''} description={skill.description || ''} />
             </div>
@@ -726,6 +778,49 @@ print(result.output)`}
               </div>
             </div>
 
+            {/* Rating Summary */}
+            {ratingData && ratingData.count > 0 && (
+              <div className="border border-border rounded-xl p-5 bg-card">
+                <h3 className="font-display font-semibold text-sm mb-4">Ratings</h3>
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="text-3xl font-bold">{Number(ratingData.average).toFixed(1)}</span>
+                  <div>
+                    <div className="flex items-center gap-0.5">
+                      {[1,2,3,4,5].map(s => (
+                        <Star key={s} className={`w-4 h-4 ${s <= Math.round(Number(ratingData.average)) ? 'text-yellow-500 fill-yellow-500' : 'text-muted-foreground/30'}`} />
+                      ))}
+                    </div>
+                    <span className="text-xs text-muted-foreground">{ratingData.count} reviews</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Related Skills */}
+            {relatedSkillsData && relatedSkillsData.length > 0 && (
+              <div className="border border-border rounded-xl p-5 bg-card">
+                <h3 className="font-display font-semibold text-sm mb-4">Related Skills</h3>
+                <div className="space-y-3">
+                  {relatedSkillsData.map((rs: any) => (
+                    <Link key={rs.id} href={`/skills/${rs.author}/${rs.slug}`}>
+                      <div className="flex items-center gap-3 p-2 -mx-2 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer">
+                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs ${getTypeBgColor(rs.type)}`}>
+                          {getTypeIcon(rs.type)}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium truncate">{rs.author}/{rs.name}</p>
+                          <p className="text-xs text-muted-foreground truncate">{rs.description}</p>
+                        </div>
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground shrink-0">
+                          <Heart className="w-3 h-3" />{formatNumber(rs.likes ?? 0)}
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Compatible Models */}
             <div className="border border-border rounded-xl p-5 bg-card">
               <h3 className="font-display font-semibold text-sm mb-4">Compatible Models</h3>
@@ -739,6 +834,82 @@ print(result.output)`}
               </div>
             </div>
           </div>
+        </div>
+        {/* Reviews Section */}
+        <div className="mt-12 border-t border-border pt-8">
+          <h2 className="font-display font-bold text-xl mb-6">Reviews & Ratings</h2>
+
+          {/* Write Review */}
+          {isAuthenticated && (
+            <div className="border border-border rounded-xl p-6 bg-card mb-8">
+              <h3 className="font-medium text-sm mb-4">Write a Review</h3>
+              <div className="flex items-center gap-1 mb-4">
+                {[1,2,3,4,5].map(s => (
+                  <button
+                    key={s}
+                    onMouseEnter={() => setHoverRating(s)}
+                    onMouseLeave={() => setHoverRating(0)}
+                    onClick={() => setReviewRating(s)}
+                    className="p-0.5"
+                  >
+                    <Star className={`w-6 h-6 transition-colors ${
+                      s <= (hoverRating || reviewRating) ? 'text-yellow-500 fill-yellow-500' : 'text-muted-foreground/30'
+                    }`} />
+                  </button>
+                ))}
+                <span className="ml-2 text-sm text-muted-foreground">{reviewRating}/5</span>
+              </div>
+              <textarea
+                value={reviewComment}
+                onChange={(e) => setReviewComment(e.target.value)}
+                placeholder="Share your experience with this skill..."
+                className="w-full h-24 p-3 rounded-lg border border-border bg-background text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary/20"
+              />
+              <div className="flex justify-end mt-3">
+                <Button
+                  size="sm"
+                  onClick={() => createReviewMutation.mutate({ skillId: skill.id, rating: reviewRating, comment: reviewComment || undefined })}
+                  disabled={createReviewMutation.isPending}
+                  className="gap-2"
+                >
+                  <Send className="w-4 h-4" />
+                  {createReviewMutation.isPending ? 'Submitting...' : 'Submit Review'}
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* Reviews List */}
+          {reviewsData && reviewsData.length > 0 ? (
+            <div className="space-y-4">
+              {reviewsData.map((review: any) => (
+                <div key={review.id} className="border border-border rounded-xl p-5 bg-card">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-sm font-bold">
+                        {(review.userName || 'U')[0].toUpperCase()}
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium">{review.userName || 'Anonymous'}</p>
+                        <p className="text-xs text-muted-foreground">{formatTimeAgo(review.createdAt)}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-0.5">
+                      {[1,2,3,4,5].map(s => (
+                        <Star key={s} className={`w-3.5 h-3.5 ${s <= review.rating ? 'text-yellow-500 fill-yellow-500' : 'text-muted-foreground/30'}`} />
+                      ))}
+                    </div>
+                  </div>
+                  {review.comment && <p className="text-sm text-muted-foreground">{review.comment}</p>}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8 text-muted-foreground">
+              <Star className="w-10 h-10 mx-auto mb-3 opacity-30" />
+              <p className="text-sm">No reviews yet. Be the first to review this skill!</p>
+            </div>
+          )}
         </div>
       </div>
     </Layout>

@@ -3,7 +3,9 @@
  * Shows: Skills, Contexts, Playgrounds, Docs in main nav
  * Everything else in "More" dropdown (HuggingFace-style)
  */
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
+import { trpc } from '@/lib/trpc';
+import { formatNumber } from '@/lib/data';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -94,6 +96,8 @@ export default function Navbar() {
   const [searchQuery, setSearchQuery] = useState('');
   const [scrolled, setScrolled] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const [debouncedQuery, setDebouncedQuery] = useState('');
   const moreRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -102,16 +106,30 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Debounce search query
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedQuery(searchQuery.trim()), 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  // Search results
+  const { data: searchResults, isLoading: searchLoading } = trpc.skills.search.useQuery(
+    { query: debouncedQuery, limit: 8 },
+    { enabled: debouncedQuery.length >= 2 }
+  );
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === '/' && !searchFocused && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement)) {
         e.preventDefault();
+        searchInputRef.current?.focus();
         setSearchFocused(true);
       }
       if (e.key === 'Escape') {
         setSearchFocused(false);
         setSearchQuery('');
         setMoreOpen(false);
+        searchInputRef.current?.blur();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -143,21 +161,92 @@ export default function Navbar() {
             <Logo size={28} />
           </Link>
 
-          {/* Search */}
+          {/* Search with live results */}
           <div ref={searchRef} className="relative hidden md:flex items-center flex-1 max-w-xs lg:max-w-sm">
             <Search className="absolute left-3 w-4 h-4 text-muted-foreground pointer-events-none z-10" />
             <input
+              ref={searchInputRef}
               type="text"
               placeholder="Search skills, contexts, users..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full h-9 pl-9 pr-10 rounded-lg border border-border bg-muted/30 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 focus:bg-background transition-all"
               onFocus={() => setSearchFocused(true)}
-              onBlur={() => setTimeout(() => setSearchFocused(false), 200)}
+              onBlur={() => setTimeout(() => setSearchFocused(false), 250)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && searchQuery.trim()) {
+                  navigate(`/skills?search=${encodeURIComponent(searchQuery.trim())}`);
+                  setSearchFocused(false);
+                  setSearchQuery('');
+                  searchInputRef.current?.blur();
+                }
+              }}
             />
             <kbd className="absolute right-2.5 hidden sm:inline-flex h-5 items-center gap-0.5 rounded border border-border/60 bg-muted/60 px-1.5 text-[10px] font-mono text-muted-foreground/60 pointer-events-none">
               /
             </kbd>
+
+            {/* Search Dropdown */}
+            {searchFocused && debouncedQuery.length >= 2 && (
+              <div className="absolute top-full left-0 right-0 mt-2 bg-popover text-popover-foreground border border-border rounded-xl shadow-xl overflow-hidden z-[100]">
+                {searchLoading ? (
+                  <div className="p-4 text-center text-sm text-muted-foreground">
+                    <div className="w-4 h-4 border-2 border-primary/30 border-t-primary rounded-full animate-spin mx-auto mb-2" />
+                    Searching...
+                  </div>
+                ) : searchResults && searchResults.items.length > 0 ? (
+                  <div>
+                    <div className="px-3 py-2 text-xs font-medium text-muted-foreground border-b border-border">
+                      Skills ({searchResults.total} results)
+                    </div>
+                    {searchResults.items.map((item: any) => (
+                      <a
+                        key={item.id}
+                        href={`/skills/${item.author}/${item.slug}`}
+                        className="flex items-center gap-3 px-3 py-2.5 hover:bg-muted/60 transition-colors cursor-pointer"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => {
+                          setSearchFocused(false);
+                          setSearchQuery('');
+                          navigate(`/skills/${item.author}/${item.slug}`);
+                        }}
+                      >
+                        <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary text-xs font-bold shrink-0">
+                          {item.author?.[0]?.toUpperCase() || 'S'}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium truncate">
+                            <span className="text-primary">{item.author}</span>
+                            <span className="text-muted-foreground">/</span>
+                            {item.name}
+                          </p>
+                          <p className="text-xs text-muted-foreground truncate">{item.description}</p>
+                        </div>
+                        <span className="text-xs text-muted-foreground shrink-0">♥ {formatNumber(item.likes ?? 0)}</span>
+                      </a>
+                    ))}
+                    {searchResults.total > 8 && (
+                      <a
+                        href={`/skills?search=${encodeURIComponent(debouncedQuery)}`}
+                        className="block px-3 py-2.5 text-center text-sm text-primary hover:bg-muted/60 border-t border-border transition-colors"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => {
+                          setSearchFocused(false);
+                          setSearchQuery('');
+                          navigate(`/skills?search=${encodeURIComponent(debouncedQuery)}`);
+                        }}
+                      >
+                        View all {searchResults.total} results →
+                      </a>
+                    )}
+                  </div>
+                ) : (
+                  <div className="p-4 text-center text-sm text-muted-foreground">
+                    No results found for "{debouncedQuery}"
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Desktop Nav */}

@@ -16,6 +16,9 @@ import {
   getCollections,
   getPlatformStats,
   addFavorite, removeFavorite, getUserFavorites, isFavorited, getUserFavoriteSkills,
+  getSkillReviews, createSkillReview, getSkillAverageRating,
+  getRelatedSkills, forkSkill, searchSkillsFullText,
+  createSkill, updateSkill, createSkillFile, updateSkillFiles,
 } from "./db";
 
 export const appRouter = router({
@@ -67,6 +70,78 @@ export const appRouter = router({
     byCategory: publicProcedure
       .input(z.object({ categoryId: z.number(), limit: z.number().optional(), offset: z.number().optional() }))
       .query(({ input }) => getSkillsByCategoryId(input.categoryId, input.limit, input.offset)),
+    related: publicProcedure
+      .input(z.object({ skillId: z.number(), categoryId: z.number().nullable(), tags: z.array(z.string()).nullable(), limit: z.number().optional() }))
+      .query(({ input }) => getRelatedSkills(input.skillId, input.categoryId, input.tags, input.limit)),
+    search: publicProcedure
+      .input(z.object({ query: z.string(), limit: z.number().optional(), offset: z.number().optional() }))
+      .query(({ input }) => searchSkillsFullText(input.query, input.limit, input.offset)),
+    create: protectedProcedure
+      .input(z.object({
+        name: z.string().min(1),
+        slug: z.string().min(1),
+        description: z.string().optional(),
+        readme: z.string().optional(),
+        type: z.enum(['prompt', 'agent', 'tool', 'rpa', 'workflow', 'template']).optional(),
+        categoryId: z.number().optional(),
+        tags: z.array(z.string()).optional(),
+        license: z.string().optional(),
+        isPublic: z.boolean().optional(),
+        files: z.array(z.object({
+          path: z.string(),
+          name: z.string(),
+          content: z.string().nullable(),
+          size: z.number(),
+          mimeType: z.string().nullable(),
+          isDirectory: z.boolean(),
+        })).optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const { files, tags, ...skillData } = input;
+        const result = await createSkill({
+          ...skillData,
+          author: ctx.user.name || 'Anonymous',
+          userId: ctx.user.id,
+          tags: tags ? JSON.stringify(tags) : null,
+        } as any);
+        if (files && files.length > 0) {
+          for (const file of files) {
+            await createSkillFile({ skillId: result.id, ...file });
+          }
+        }
+        return result;
+      }),
+    update: protectedProcedure
+      .input(z.object({
+        id: z.number(),
+        name: z.string().optional(),
+        description: z.string().optional(),
+        readme: z.string().optional(),
+        type: z.enum(['prompt', 'agent', 'tool', 'rpa', 'workflow', 'template']).optional(),
+        categoryId: z.number().optional(),
+        tags: z.array(z.string()).optional(),
+        license: z.string().optional(),
+        isPublic: z.boolean().optional(),
+        files: z.array(z.object({
+          path: z.string(),
+          name: z.string(),
+          content: z.string().nullable(),
+          size: z.number(),
+          mimeType: z.string().nullable(),
+          isDirectory: z.boolean(),
+        })).optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const { id, files, tags, ...data } = input;
+        await updateSkill(id, { ...data, tags: tags ? JSON.stringify(tags) : undefined } as any);
+        if (files) {
+          await updateSkillFiles(id, files);
+        }
+        return { success: true };
+      }),
+    fork: protectedProcedure
+      .input(z.object({ skillId: z.number() }))
+      .mutation(({ ctx, input }) => forkSkill(input.skillId, ctx.user.id, ctx.user.name || 'Anonymous')),
   }),
 
   // Contexts
@@ -155,6 +230,28 @@ export const appRouter = router({
       .query(({ ctx, input }) => isFavorited(ctx.user.id, input.targetType, input.targetId)),
     skills: protectedProcedure
       .query(({ ctx }) => getUserFavoriteSkills(ctx.user.id)),
+  }),
+
+  // Reviews
+  reviews: router({
+    list: publicProcedure
+      .input(z.object({ skillId: z.number() }))
+      .query(({ input }) => getSkillReviews(input.skillId)),
+    rating: publicProcedure
+      .input(z.object({ skillId: z.number() }))
+      .query(({ input }) => getSkillAverageRating(input.skillId)),
+    create: protectedProcedure
+      .input(z.object({
+        skillId: z.number(),
+        rating: z.number().min(1).max(5),
+        comment: z.string().optional(),
+      }))
+      .mutation(({ ctx, input }) => createSkillReview({
+        skillId: input.skillId,
+        userId: ctx.user.id,
+        rating: input.rating,
+        comment: input.comment || null,
+      })),
   }),
 
   // Platform stats
