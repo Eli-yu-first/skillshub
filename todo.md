@@ -58,20 +58,20 @@
 - [x] Deps 标签页和 Agents 市场页面
 - [x] Agent 创建页面（选择 Skills + 大模型）
 - [x] 一键沙箱部署功能
-- [ ] 提交到 GitHub ✅
+- [x] 提交到 GitHub ✅
 
 ## Step 7: GitHub Skills 导入 → 提交到 GitHub
 - [x] 研究并导入 openai/skills（32个）
 - [x] 研究并导入 anthropics/skills（16个）
 - [x] 研究并导入 vercel-labs/skills（1个）
 - [x] 研究并导入 huggingface/skills（10个）
-- [ ] 提交到 GitHub ✅
+- [x] 提交到 GitHub ✅
 
 ## Step 8: 修复 GitHub Skills 导入并提交 → 提交到 GitHub
 - [x] 修复 import-github-skills.mjs 中的列名错误（type→mimeType, isDirectory）
 - [x] 成功运行导入脚本（53个 Skills 导入）
-- [ ] 提交到 GitHub ✅
+- [x] 提交到 GitHub ✅
 
 ## Step 9: 创建专业 README 文件 → 提交到 GitHub
-- [ ] 编写专业开源风格 README.md（项目结构、部署方法、技术栈）
+- [x] 编写专业开源风格 README.md（项目结构、部署方法、技术栈）
 - [ ] 提交到 GitHub ✅
