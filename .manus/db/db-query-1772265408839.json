@@ -1,0 +1,30 @@
+{
+  "query": "SELECT 'skills' as tbl, COUNT(*) as cnt FROM skills UNION ALL SELECT 'categories', COUNT(*) FROM categories UNION ALL SELECT 'skill_files', COUNT(*) FROM skill_files UNION ALL SELECT 'skill_commits', COUNT(*) FROM skill_commits UNION ALL SELECT 'discussions', COUNT(*) FROM discussions;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user EJ2Dmgw47ST5Jf7.23b0238a68a1 --database je9AuFXnSjKSckmT5BcZBx --execute SELECT 'skills' as tbl, COUNT(*) as cnt FROM skills UNION ALL SELECT 'categories', COUNT(*) FROM categories UNION ALL SELECT 'skill_files', COUNT(*) FROM skill_files UNION ALL SELECT 'skill_commits', COUNT(*) FROM skill_commits UNION ALL SELECT 'discussions', COUNT(*) FROM discussions;",
+  "rows": [
+    {
+      "tbl": "skill_commits",
+      "cnt": "0"
+    },
+    {
+      "tbl": "discussions",
+      "cnt": "0"
+    },
+    {
+      "tbl": "skills",
+      "cnt": "510"
+    },
+    {
+      "tbl": "categories",
+      "cnt": "673"
+    },
+    {
+      "tbl": "skill_files",
+      "cnt": "2188"
+    }
+  ],
+  "messages": [],
+  "stdout": "tbl\tcnt\nskill_commits\t0\ndiscussions\t0\nskills\t510\ncategories\t673\nskill_files\t2188\n",
+  "stderr": "",
+  "execution_time_ms": 1544
+}

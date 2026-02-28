@@ -23,15 +23,17 @@ export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 
 // ============================================================================
-// CATEGORIES (50 skill domains)
+// CATEGORIES (50 skill domains) - hierarchical
 // ============================================================================
 export const categories = mysqlTable("categories", {
   id: int("id").autoincrement().primaryKey(),
-  name: varchar("name", { length: 128 }).notNull().unique(),
+  name: varchar("name", { length: 128 }).notNull(),  // not unique - sub-categories may share names
   slug: varchar("slug", { length: 128 }).notNull().unique(),
   description: text("description"),
   icon: varchar("icon", { length: 64 }),
   color: varchar("color", { length: 32 }),
+  parentId: int("parentId"),
+  level: int("level").default(0).notNull(),
   skillCount: int("skillCount").default(0).notNull(),
   sortOrder: int("sortOrder").default(0).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
@@ -281,3 +283,29 @@ export const collections = mysqlTable("collections", {
 });
 
 export type Collection = typeof collections.$inferSelect;
+
+// ============================================================================
+// USER FAVORITES
+// ============================================================================
+export const userFavorites = mysqlTable("user_favorites", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  targetType: mysqlEnum("targetType", ["skill", "context", "playground", "agent"]).notNull(),
+  targetId: int("targetId").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type UserFavorite = typeof userFavorites.$inferSelect;
+export type InsertUserFavorite = typeof userFavorites.$inferInsert;
+
+// ============================================================================
+// AGENT SKILLS (many-to-many)
+// ============================================================================
+export const agentSkills = mysqlTable("agent_skills", {
+  id: int("id").autoincrement().primaryKey(),
+  agentId: int("agentId").notNull(),
+  skillId: int("skillId").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type AgentSkill = typeof agentSkills.$inferSelect;

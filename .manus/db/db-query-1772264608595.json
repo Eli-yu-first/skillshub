@@ -1,0 +1,9 @@
+{
+  "query": "ALTER TABLE `categories` DROP INDEX `categories_name_unique`;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user EJ2Dmgw47ST5Jf7.23b0238a68a1 --database je9AuFXnSjKSckmT5BcZBx --execute ALTER TABLE `categories` DROP INDEX `categories_name_unique`;",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1758
+}
