@@ -1,5 +1,13 @@
 {
   "version": "7",
   "dialect": "mysql",
-  "entries": []
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1772262665807,
+      "tag": "0000_good_smiling_tiger",
+      "breakpoints": true
+    }
+  ]
 }

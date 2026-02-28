@@ -1,0 +1,21 @@
+# SkillsHub 迁移 TODO
+
+- [x] 迁移数据库 schema（11个核心表）
+- [x] 执行建表 SQL
+- [x] 迁移 server/db.ts（所有查询函数）
+- [x] 迁移 server/routers.ts（10个功能模块）
+- [x] 迁移 server/storage.ts
+- [x] 迁移 seed 脚本和数据文件
+- [x] 迁移 shared 类型和常量
+- [x] 迁移前端页面（20+页面）
+- [x] 迁移前端组件（30+组件）
+- [x] 迁移 hooks 和 contexts
+- [x] 迁移 lib 工具函数
+- [x] 迁移 CSS 样式和主题
+- [x] 迁移 vite.config.ts 配置
+- [x] 迁移 tsconfig 配置
+- [x] 安装额外依赖（ai-sdk, react-markdown, rehype, remark 等）
+- [x] 迁移 wouter patch
+- [x] 执行数据库种子数据填充
+- [x] 编写 vitest 测试
+- [x] 验证所有页面和功能正常
