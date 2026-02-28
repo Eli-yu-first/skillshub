@@ -26,6 +26,7 @@ import DepsCreate from "./pages/DepsCreate";
 import DepsDetail from "./pages/DepsDetail";
 import AgentRun from "./pages/AgentRun";
 import Profile from "./pages/Profile";
+import UserProfile from "./pages/UserProfile";
 import SkillCreate from "./pages/SkillCreate";
 
 function Router() {
@@ -64,6 +65,7 @@ function Router() {
       <Route path="/forum" component={Community} />
       <Route path="/community/:section" component={ComingSoon} />
       <Route path="/profile" component={Profile} />
+      <Route path="/profile/:username" component={UserProfile} />
       <Route path="/skills/new" component={SkillCreate} />
       <Route path="/contexts/new" component={ComingSoon} />
       <Route path="/playgrounds/new" component={ComingSoon} />

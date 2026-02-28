@@ -130,10 +130,10 @@
 - [x] 下拉框底部 "Browse All Models" 点击后出现全屏弹窗，支持多选和搜索 → 提交到 GitHub
 
 ## 用户个人主页
-- [ ] 创建 UserProfile 页面 → 提交到 GitHub
-- [ ] 展示用户创建的技能列表 → 提交到 GitHub
-- [ ] 展示用户收藏的技能列表 → 提交到 GitHub
-- [ ] 展示用户创建的 Agent 列表 → 提交到 GitHub
+- [x] 创建 UserProfile 页面 → 提交到 GitHub
+- [x] 展示用户创建的技能列表 → 提交到 GitHub
+- [x] 展示用户收藏的技能列表 → 提交到 GitHub
+- [x] 展示用户创建的 Agent 列表 → 提交到 GitHub
 
 ## 技能版本控制
 - [ ] 技能编辑器版本控制功能 → 提交到 GitHub
