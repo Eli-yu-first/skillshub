@@ -1,0 +1,18 @@
+{
+  "name": "Subtitle Translation Engine",
+  "author": "sub-translate",
+  "version": "1.0.0",
+  "type": "workflow",
+  "category": "Translation & Localization",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:10:12.540Z",
+  "license": "MIT",
+  "downloads": 48751,
+  "stars": 460,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

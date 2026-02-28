@@ -1,0 +1,18 @@
+{
+  "name": "Unity Script Generator",
+  "author": "unity-ai",
+  "version": "1.0.0",
+  "type": "tool",
+  "category": "Game Development",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:09:43.885Z",
+  "license": "MIT",
+  "downloads": 33026,
+  "stars": 191,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

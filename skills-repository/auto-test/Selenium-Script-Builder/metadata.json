@@ -1,0 +1,18 @@
+{
+  "name": "Selenium Script Builder",
+  "author": "auto-test",
+  "version": "1.0.0",
+  "type": "tool",
+  "category": "Quality Assurance",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:10:22.957Z",
+  "license": "MIT",
+  "downloads": 22856,
+  "stars": 305,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

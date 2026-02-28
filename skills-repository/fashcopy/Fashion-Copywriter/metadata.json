@@ -1,0 +1,18 @@
+{
+  "name": "Fashion Copywriter",
+  "author": "fashcopy",
+  "version": "1.0.0",
+  "type": "prompt",
+  "category": "Fashion & Textile",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:08:16.678Z",
+  "license": "MIT",
+  "downloads": 38754,
+  "stars": 201,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

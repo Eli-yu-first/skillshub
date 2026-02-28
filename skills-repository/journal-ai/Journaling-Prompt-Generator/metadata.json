@@ -1,0 +1,18 @@
+{
+  "name": "Journaling Prompt Generator",
+  "author": "journal-ai",
+  "version": "1.0.0",
+  "type": "prompt",
+  "category": "Personal Development",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:11:56.722Z",
+  "license": "MIT",
+  "downloads": 19945,
+  "stars": 491,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

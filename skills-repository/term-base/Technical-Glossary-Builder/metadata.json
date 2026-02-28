@@ -1,0 +1,18 @@
+{
+  "name": "Technical Glossary Builder",
+  "author": "term-base",
+  "version": "1.0.0",
+  "type": "tool",
+  "category": "Translation & Localization",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:10:13.842Z",
+  "license": "MIT",
+  "downloads": 21626,
+  "stars": 462,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

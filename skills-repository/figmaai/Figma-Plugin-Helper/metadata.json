@@ -1,0 +1,18 @@
+{
+  "name": "Figma Plugin Helper",
+  "author": "figmaai",
+  "version": "1.0.0",
+  "type": "tool",
+  "category": "UI/UX Design",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:03:56.043Z",
+  "license": "MIT",
+  "downloads": 4373,
+  "stars": 326,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

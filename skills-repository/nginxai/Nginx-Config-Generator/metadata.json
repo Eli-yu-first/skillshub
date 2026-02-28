@@ -1,0 +1,18 @@
+{
+  "name": "Nginx Config Generator",
+  "author": "nginxai",
+  "version": "1.0.0",
+  "type": "tool",
+  "category": "DevOps & Cloud",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:03:32.928Z",
+  "license": "MIT",
+  "downloads": 42219,
+  "stars": 467,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

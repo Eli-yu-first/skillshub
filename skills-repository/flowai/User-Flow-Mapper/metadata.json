@@ -1,0 +1,18 @@
+{
+  "name": "User Flow Mapper",
+  "author": "flowai",
+  "version": "1.0.0",
+  "type": "agent",
+  "category": "UI/UX Design",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:03:54.759Z",
+  "license": "MIT",
+  "downloads": 21972,
+  "stars": 383,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

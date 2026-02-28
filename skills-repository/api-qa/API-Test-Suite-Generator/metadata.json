@@ -1,0 +1,18 @@
+{
+  "name": "API Test Suite Generator",
+  "author": "api-qa",
+  "version": "1.0.0",
+  "type": "tool",
+  "category": "Quality Assurance",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:10:24.258Z",
+  "license": "MIT",
+  "downloads": 41722,
+  "stars": 53,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

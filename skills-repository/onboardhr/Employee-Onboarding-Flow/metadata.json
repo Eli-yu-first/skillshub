@@ -1,0 +1,18 @@
+{
+  "name": "Employee Onboarding Flow",
+  "author": "onboardhr",
+  "version": "1.0.0",
+  "type": "workflow",
+  "category": "Human Resources",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:07:10.322Z",
+  "license": "MIT",
+  "downloads": 33737,
+  "stars": 445,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

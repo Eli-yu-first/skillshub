@@ -1,0 +1,18 @@
+{
+  "name": "Pitch Deck Creator",
+  "author": "pitchai",
+  "version": "1.0.0",
+  "type": "workflow",
+  "category": "Entrepreneurship",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:03:02.024Z",
+  "license": "MIT",
+  "downloads": 28406,
+  "stars": 358,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

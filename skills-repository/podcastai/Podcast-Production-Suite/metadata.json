@@ -1,0 +1,18 @@
+{
+  "name": "Podcast Production Suite",
+  "author": "podcastai",
+  "version": "1.0.0",
+  "type": "workflow",
+  "category": "Music Production",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:08:10.170Z",
+  "license": "MIT",
+  "downloads": 13551,
+  "stars": 11,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

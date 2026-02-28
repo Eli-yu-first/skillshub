@@ -1,0 +1,18 @@
+{
+  "name": "Firewall Rule Optimizer",
+  "author": "fwai",
+  "version": "1.0.0",
+  "type": "tool",
+  "category": "Cybersecurity",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:03:45.766Z",
+  "license": "MIT",
+  "downloads": 22068,
+  "stars": 462,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

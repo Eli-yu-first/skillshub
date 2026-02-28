@@ -1,0 +1,18 @@
+{
+  "name": "News Article Writer",
+  "author": "press-ai",
+  "version": "1.0.0",
+  "type": "prompt",
+  "category": "Journalism & Media",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:11:00.720Z",
+  "license": "MIT",
+  "downloads": 27683,
+  "stars": 360,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

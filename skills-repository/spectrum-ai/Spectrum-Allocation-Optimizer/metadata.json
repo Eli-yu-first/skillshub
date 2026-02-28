@@ -1,0 +1,18 @@
+{
+  "name": "Spectrum Allocation Optimizer",
+  "author": "spectrum-ai",
+  "version": "1.0.0",
+  "type": "tool",
+  "category": "Telecommunications",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:11:41.088Z",
+  "license": "MIT",
+  "downloads": 43059,
+  "stars": 426,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

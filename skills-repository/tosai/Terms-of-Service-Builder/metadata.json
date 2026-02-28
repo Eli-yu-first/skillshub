@@ -1,0 +1,18 @@
+{
+  "name": "Terms of Service Builder",
+  "author": "tosai",
+  "version": "1.0.0",
+  "type": "template",
+  "category": "Legal Domain",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:02:41.470Z",
+  "license": "MIT",
+  "downloads": 41962,
+  "stars": 386,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

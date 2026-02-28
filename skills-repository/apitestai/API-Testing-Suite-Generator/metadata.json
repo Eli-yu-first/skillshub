@@ -1,0 +1,18 @@
+{
+  "name": "API Testing Suite Generator",
+  "author": "apitestai",
+  "version": "1.0.0",
+  "type": "tool",
+  "category": "API Development",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:05:40.550Z",
+  "license": "MIT",
+  "downloads": 7740,
+  "stars": 75,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

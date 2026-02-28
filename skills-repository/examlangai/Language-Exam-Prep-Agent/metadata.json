@@ -1,0 +1,18 @@
+{
+  "name": "Language Exam Prep Agent",
+  "author": "examlangai",
+  "version": "1.0.0",
+  "type": "agent",
+  "category": "Language Learning",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:09:15.229Z",
+  "license": "MIT",
+  "downloads": 28942,
+  "stars": 294,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

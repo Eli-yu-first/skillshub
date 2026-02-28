@@ -1,0 +1,18 @@
+{
+  "name": "Beat Pattern Designer",
+  "author": "beatai",
+  "version": "1.0.0",
+  "type": "tool",
+  "category": "Music Production",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:08:02.364Z",
+  "license": "MIT",
+  "downloads": 18362,
+  "stars": 283,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

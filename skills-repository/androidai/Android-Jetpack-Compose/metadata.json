@@ -1,0 +1,18 @@
+{
+  "name": "Android Jetpack Compose",
+  "author": "androidai",
+  "version": "1.0.0",
+  "type": "prompt",
+  "category": "App Development",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:01:21.892Z",
+  "license": "MIT",
+  "downloads": 27353,
+  "stars": 37,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

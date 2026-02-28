@@ -1,0 +1,18 @@
+{
+  "name": "Last Mile Delivery Optimizer",
+  "author": "lastmile-ai",
+  "version": "1.0.0",
+  "type": "agent",
+  "category": "Supply Chain & Logistics",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:10:45.078Z",
+  "license": "MIT",
+  "downloads": 44616,
+  "stars": 67,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

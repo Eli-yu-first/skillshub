@@ -1,0 +1,18 @@
+{
+  "name": "Translation Memory Manager",
+  "author": "tm-tools",
+  "version": "1.0.0",
+  "type": "rpa",
+  "category": "Translation & Localization",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:10:19.054Z",
+  "license": "MIT",
+  "downloads": 43522,
+  "stars": 388,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

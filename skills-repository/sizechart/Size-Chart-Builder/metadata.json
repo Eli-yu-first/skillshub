@@ -1,0 +1,18 @@
+{
+  "name": "Size Chart Builder",
+  "author": "sizechart",
+  "version": "1.0.0",
+  "type": "tool",
+  "category": "Fashion & Textile",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:08:15.376Z",
+  "license": "MIT",
+  "downloads": 32116,
+  "stars": 257,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

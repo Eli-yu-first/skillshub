@@ -1,0 +1,18 @@
+{
+  "name": "Neighborhood Analyzer",
+  "author": "neighborai",
+  "version": "1.0.0",
+  "type": "agent",
+  "category": "Real Estate",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:07:28.532Z",
+  "license": "MIT",
+  "downloads": 25613,
+  "stars": 260,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

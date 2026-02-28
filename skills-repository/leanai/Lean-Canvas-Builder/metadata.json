@@ -1,0 +1,18 @@
+{
+  "name": "Lean Canvas Builder",
+  "author": "leanai",
+  "version": "1.0.0",
+  "type": "template",
+  "category": "Entrepreneurship",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:03:07.186Z",
+  "license": "MIT",
+  "downloads": 9329,
+  "stars": 430,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

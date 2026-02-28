@@ -1,0 +1,18 @@
+{
+  "name": "Chatbot Flow Builder",
+  "author": "chatbotai",
+  "version": "1.0.0",
+  "type": "workflow",
+  "category": "Customer Service",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:05:09.361Z",
+  "license": "MIT",
+  "downloads": 46062,
+  "stars": 51,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

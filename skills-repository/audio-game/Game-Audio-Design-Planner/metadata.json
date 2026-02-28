@@ -1,0 +1,18 @@
+{
+  "name": "Game Audio Design Planner",
+  "author": "audio-game",
+  "version": "1.0.0",
+  "type": "workflow",
+  "category": "Game Development",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:09:54.306Z",
+  "license": "MIT",
+  "downloads": 23457,
+  "stars": 386,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

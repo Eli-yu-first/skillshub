@@ -1,0 +1,18 @@
+{
+  "name": "Resume Screening Agent",
+  "author": "hrai",
+  "version": "1.0.0",
+  "type": "agent",
+  "category": "Human Resources",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:07:06.414Z",
+  "license": "MIT",
+  "downloads": 7314,
+  "stars": 28,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

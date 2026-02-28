@@ -1,0 +1,18 @@
+{
+  "name": "Drug Interaction Checker",
+  "author": "drugai",
+  "version": "1.0.0",
+  "type": "tool",
+  "category": "General",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:04:48.774Z",
+  "license": "MIT",
+  "downloads": 37705,
+  "stars": 147,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "name": "Blockchain Explorer Builder",
+  "author": "explorai",
+  "version": "1.0.0",
+  "type": "workflow",
+  "category": "Blockchain & Web3",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:06:35.203Z",
+  "license": "MIT",
+  "downloads": 35452,
+  "stars": 380,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

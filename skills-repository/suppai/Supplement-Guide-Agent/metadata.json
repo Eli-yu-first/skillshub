@@ -1,0 +1,18 @@
+{
+  "name": "Supplement Guide Agent",
+  "author": "suppai",
+  "version": "1.0.0",
+  "type": "agent",
+  "category": "Fitness & Sports",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:08:33.595Z",
+  "license": "MIT",
+  "downloads": 18285,
+  "stars": 275,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

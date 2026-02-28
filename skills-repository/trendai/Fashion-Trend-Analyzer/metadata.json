@@ -1,0 +1,18 @@
+{
+  "name": "Fashion Trend Analyzer",
+  "author": "trendai",
+  "version": "1.0.0",
+  "type": "agent",
+  "category": "Fashion & Textile",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:08:11.469Z",
+  "license": "MIT",
+  "downloads": 18232,
+  "stars": 498,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

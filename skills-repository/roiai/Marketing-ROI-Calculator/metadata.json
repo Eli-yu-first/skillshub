@@ -1,0 +1,18 @@
+{
+  "name": "Marketing ROI Calculator",
+  "author": "roiai",
+  "version": "1.0.0",
+  "type": "tool",
+  "category": "Marketing & SEO",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:04:16.607Z",
+  "license": "MIT",
+  "downloads": 11201,
+  "stars": 467,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

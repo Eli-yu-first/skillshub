@@ -1,0 +1,18 @@
+{
+  "name": "PDF Data Extractor",
+  "author": "pdfbot",
+  "version": "1.0.0",
+  "type": "tool",
+  "category": "Office Productivity",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:01:38.575Z",
+  "license": "MIT",
+  "downloads": 19808,
+  "stars": 324,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

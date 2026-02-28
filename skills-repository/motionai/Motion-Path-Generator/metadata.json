@@ -1,0 +1,18 @@
+{
+  "name": "Motion Path Generator",
+  "author": "motionai",
+  "version": "1.0.0",
+  "type": "tool",
+  "category": "Animation Production",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:02:51.742Z",
+  "license": "MIT",
+  "downloads": 16979,
+  "stars": 116,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

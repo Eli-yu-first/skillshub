@@ -1,0 +1,18 @@
+{
+  "name": "NDA Generator",
+  "author": "ndaai",
+  "version": "1.0.0",
+  "type": "template",
+  "category": "Legal Domain",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:02:37.603Z",
+  "license": "MIT",
+  "downloads": 38106,
+  "stars": 31,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

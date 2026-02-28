@@ -1,0 +1,18 @@
+{
+  "name": "NPC Dialogue Tree Builder",
+  "author": "narrative-ai",
+  "version": "1.0.0",
+  "type": "agent",
+  "category": "Game Development",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:09:45.186Z",
+  "license": "MIT",
+  "downloads": 41138,
+  "stars": 433,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

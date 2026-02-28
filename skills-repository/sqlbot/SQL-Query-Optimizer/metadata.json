@@ -1,0 +1,18 @@
+{
+  "name": "SQL Query Optimizer",
+  "author": "sqlbot",
+  "version": "1.0.0",
+  "type": "tool",
+  "category": "Data Science",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:03:16.204Z",
+  "license": "MIT",
+  "downloads": 40952,
+  "stars": 306,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

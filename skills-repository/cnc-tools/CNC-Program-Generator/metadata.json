@@ -1,0 +1,18 @@
+{
+  "name": "CNC Program Generator",
+  "author": "cnc-tools",
+  "version": "1.0.0",
+  "type": "tool",
+  "category": "Manufacturing",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:11:37.182Z",
+  "license": "MIT",
+  "downloads": 24322,
+  "stars": 291,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

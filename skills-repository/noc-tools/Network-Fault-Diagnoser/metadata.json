@@ -1,0 +1,18 @@
+{
+  "name": "Network Fault Diagnoser",
+  "author": "noc-tools",
+  "version": "1.0.0",
+  "type": "agent",
+  "category": "Telecommunications",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:11:43.692Z",
+  "license": "MIT",
+  "downloads": 7172,
+  "stars": 51,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

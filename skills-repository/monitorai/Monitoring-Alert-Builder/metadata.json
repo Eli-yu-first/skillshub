@@ -1,0 +1,18 @@
+{
+  "name": "Monitoring Alert Builder",
+  "author": "monitorai",
+  "version": "1.0.0",
+  "type": "tool",
+  "category": "DevOps & Cloud",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:03:31.642Z",
+  "license": "MIT",
+  "downloads": 33088,
+  "stars": 268,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "name": "Incident Response Playbook",
+  "author": "irbot",
+  "version": "1.0.0",
+  "type": "workflow",
+  "category": "Cybersecurity",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:03:43.199Z",
+  "license": "MIT",
+  "downloads": 21320,
+  "stars": 389,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

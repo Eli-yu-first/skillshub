@@ -1,0 +1,18 @@
+{
+  "name": "IoT Dashboard Builder",
+  "author": "iotdash",
+  "version": "1.0.0",
+  "type": "workflow",
+  "category": "IoT & Embedded",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:06:46.896Z",
+  "license": "MIT",
+  "downloads": 23522,
+  "stars": 438,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

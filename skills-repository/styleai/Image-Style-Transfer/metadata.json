@@ -1,0 +1,18 @@
+{
+  "name": "Image Style Transfer",
+  "author": "styleai",
+  "version": "1.0.0",
+  "type": "tool",
+  "category": "Image Creation",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:02:06.805Z",
+  "license": "MIT",
+  "downloads": 13335,
+  "stars": 202,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "name": "Biodiversity Impact Assessor",
+  "author": "bioai",
+  "version": "1.0.0",
+  "type": "agent",
+  "category": "Sustainability",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:08:59.611Z",
+  "license": "MIT",
+  "downloads": 32071,
+  "stars": 193,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

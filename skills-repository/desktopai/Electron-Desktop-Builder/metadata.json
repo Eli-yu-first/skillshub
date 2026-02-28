@@ -1,0 +1,18 @@
+{
+  "name": "Electron Desktop Builder",
+  "author": "desktopai",
+  "version": "1.0.0",
+  "type": "workflow",
+  "category": "App Development",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:01:29.595Z",
+  "license": "MIT",
+  "downloads": 35941,
+  "stars": 339,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

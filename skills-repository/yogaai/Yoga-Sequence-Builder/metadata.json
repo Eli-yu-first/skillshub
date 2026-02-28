@@ -1,0 +1,18 @@
+{
+  "name": "Yoga Sequence Builder",
+  "author": "yogaai",
+  "version": "1.0.0",
+  "type": "tool",
+  "category": "Fitness & Sports",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:08:30.992Z",
+  "license": "MIT",
+  "downloads": 9053,
+  "stars": 71,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

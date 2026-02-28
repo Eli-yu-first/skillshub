@@ -1,0 +1,18 @@
+{
+  "name": "Pricing Strategy Optimizer",
+  "author": "priceai",
+  "version": "1.0.0",
+  "type": "agent",
+  "category": "E-commerce",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:04:21.747Z",
+  "license": "MIT",
+  "downloads": 10797,
+  "stars": 325,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

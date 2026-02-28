@@ -1,0 +1,18 @@
+{
+  "name": "Emission Compliance Checker",
+  "author": "emissionai",
+  "version": "1.0.0",
+  "type": "agent",
+  "category": "Automotive",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:07:44.152Z",
+  "license": "MIT",
+  "downloads": 19812,
+  "stars": 38,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

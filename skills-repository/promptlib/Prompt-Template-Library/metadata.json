@@ -1,0 +1,18 @@
+{
+  "name": "Prompt Template Library",
+  "author": "promptlib",
+  "version": "1.0.0",
+  "type": "template",
+  "category": "NLP",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:06:09.162Z",
+  "license": "MIT",
+  "downloads": 6205,
+  "stars": 306,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

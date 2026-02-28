@@ -1,0 +1,18 @@
+{
+  "name": "Semantic Search Engine",
+  "author": "searchai",
+  "version": "1.0.0",
+  "type": "agent",
+  "category": "NLP",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:06:10.465Z",
+  "license": "MIT",
+  "downloads": 32482,
+  "stars": 495,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

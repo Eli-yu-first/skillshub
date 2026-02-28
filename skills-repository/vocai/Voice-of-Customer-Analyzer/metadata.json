@@ -1,0 +1,18 @@
+{
+  "name": "Voice of Customer Analyzer",
+  "author": "vocai",
+  "version": "1.0.0",
+  "type": "agent",
+  "category": "Customer Service",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:05:17.125Z",
+  "license": "MIT",
+  "downloads": 34214,
+  "stars": 94,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

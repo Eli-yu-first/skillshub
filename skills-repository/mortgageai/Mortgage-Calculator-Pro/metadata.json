@@ -1,0 +1,18 @@
+{
+  "name": "Mortgage Calculator Pro",
+  "author": "mortgageai",
+  "version": "1.0.0",
+  "type": "tool",
+  "category": "Real Estate",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:07:22.027Z",
+  "license": "MIT",
+  "downloads": 42769,
+  "stars": 183,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

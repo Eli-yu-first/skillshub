@@ -1,0 +1,18 @@
+{
+  "name": "Sprint Planning Agent",
+  "author": "sprintai",
+  "version": "1.0.0",
+  "type": "agent",
+  "category": "Project Management",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:06:53.409Z",
+  "license": "MIT",
+  "downloads": 43901,
+  "stars": 483,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

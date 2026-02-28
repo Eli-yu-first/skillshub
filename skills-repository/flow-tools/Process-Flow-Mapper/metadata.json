@@ -1,0 +1,18 @@
+{
+  "name": "Process Flow Mapper",
+  "author": "flow-tools",
+  "version": "1.0.0",
+  "type": "workflow",
+  "category": "Manufacturing",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:11:34.577Z",
+  "license": "MIT",
+  "downloads": 7723,
+  "stars": 369,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

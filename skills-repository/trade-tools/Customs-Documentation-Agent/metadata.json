@@ -1,0 +1,18 @@
+{
+  "name": "Customs Documentation Agent",
+  "author": "trade-tools",
+  "version": "1.0.0",
+  "type": "rpa",
+  "category": "Supply Chain & Logistics",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:10:43.779Z",
+  "license": "MIT",
+  "downloads": 26069,
+  "stars": 245,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

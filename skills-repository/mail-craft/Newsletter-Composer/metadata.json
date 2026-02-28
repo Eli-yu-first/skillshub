@@ -1,0 +1,18 @@
+{
+  "name": "Newsletter Composer",
+  "author": "mail-craft",
+  "version": "1.0.0",
+  "type": "template",
+  "category": "Content Creation",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:09:59.521Z",
+  "license": "MIT",
+  "downloads": 41000,
+  "stars": 399,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

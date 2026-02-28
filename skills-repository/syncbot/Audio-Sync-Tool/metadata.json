@@ -1,0 +1,18 @@
+{
+  "name": "Audio Sync Tool",
+  "author": "syncbot",
+  "version": "1.0.0",
+  "type": "tool",
+  "category": "Video Production",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:01:53.967Z",
+  "license": "MIT",
+  "downloads": 30594,
+  "stars": 362,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "name": "Kubernetes Manifest Builder",
+  "author": "k8sai",
+  "version": "1.0.0",
+  "type": "agent",
+  "category": "DevOps & Cloud",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:03:27.793Z",
+  "license": "MIT",
+  "downloads": 7025,
+  "stars": 482,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

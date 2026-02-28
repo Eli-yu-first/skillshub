@@ -1,0 +1,18 @@
+{
+  "name": "Feature Store Designer",
+  "author": "featurestore",
+  "version": "1.0.0",
+  "type": "workflow",
+  "category": "Machine Learning",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:05:50.956Z",
+  "license": "MIT",
+  "downloads": 34171,
+  "stars": 95,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

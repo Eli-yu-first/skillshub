@@ -1,0 +1,18 @@
+{
+  "name": "Social Media Ad Creator",
+  "author": "smadai",
+  "version": "1.0.0",
+  "type": "prompt",
+  "category": "Marketing & SEO",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:04:11.473Z",
+  "license": "MIT",
+  "downloads": 45802,
+  "stars": 106,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

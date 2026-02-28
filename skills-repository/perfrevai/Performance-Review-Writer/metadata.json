@@ -1,0 +1,18 @@
+{
+  "name": "Performance Review Writer",
+  "author": "perfrevai",
+  "version": "1.0.0",
+  "type": "prompt",
+  "category": "Human Resources",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:07:11.623Z",
+  "license": "MIT",
+  "downloads": 5270,
+  "stars": 199,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

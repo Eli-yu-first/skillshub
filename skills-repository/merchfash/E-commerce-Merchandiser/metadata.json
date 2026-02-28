@@ -1,0 +1,18 @@
+{
+  "name": "E-commerce Merchandiser",
+  "author": "merchfash",
+  "version": "1.0.0",
+  "type": "agent",
+  "category": "Fashion & Textile",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:08:23.182Z",
+  "license": "MIT",
+  "downloads": 7305,
+  "stars": 282,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

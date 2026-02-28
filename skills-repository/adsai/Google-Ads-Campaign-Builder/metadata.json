@@ -1,0 +1,18 @@
+{
+  "name": "Google Ads Campaign Builder",
+  "author": "adsai",
+  "version": "1.0.0",
+  "type": "workflow",
+  "category": "Marketing & SEO",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:04:06.318Z",
+  "license": "MIT",
+  "downloads": 44874,
+  "stars": 408,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

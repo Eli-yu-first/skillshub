@@ -1,0 +1,18 @@
+{
+  "name": "Data Seeder Tool",
+  "author": "seederai",
+  "version": "1.0.0",
+  "type": "tool",
+  "category": "Database Management",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:05:34.037Z",
+  "license": "MIT",
+  "downloads": 24415,
+  "stars": 68,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

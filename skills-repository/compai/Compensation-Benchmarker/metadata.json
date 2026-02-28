@@ -1,0 +1,18 @@
+{
+  "name": "Compensation Benchmarker",
+  "author": "compai",
+  "version": "1.0.0",
+  "type": "agent",
+  "category": "Human Resources",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:07:12.924Z",
+  "license": "MIT",
+  "downloads": 15536,
+  "stars": 101,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

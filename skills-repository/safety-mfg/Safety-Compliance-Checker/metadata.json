@@ -1,0 +1,18 @@
+{
+  "name": "Safety Compliance Checker",
+  "author": "safety-mfg",
+  "version": "1.0.0",
+  "type": "rpa",
+  "category": "Manufacturing",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:11:33.276Z",
+  "license": "MIT",
+  "downloads": 41449,
+  "stars": 391,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

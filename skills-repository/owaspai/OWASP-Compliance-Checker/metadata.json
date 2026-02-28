@@ -1,0 +1,18 @@
+{
+  "name": "OWASP Compliance Checker",
+  "author": "owaspai",
+  "version": "1.0.0",
+  "type": "tool",
+  "category": "Cybersecurity",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:03:44.482Z",
+  "license": "MIT",
+  "downloads": 29235,
+  "stars": 419,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

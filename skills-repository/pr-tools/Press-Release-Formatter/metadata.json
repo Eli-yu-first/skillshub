@@ -1,0 +1,18 @@
+{
+  "name": "Press Release Formatter",
+  "author": "pr-tools",
+  "version": "1.0.0",
+  "type": "template",
+  "category": "Journalism & Media",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:11:04.624Z",
+  "license": "MIT",
+  "downloads": 7433,
+  "stars": 500,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

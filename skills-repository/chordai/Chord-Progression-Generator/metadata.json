@@ -1,0 +1,18 @@
+{
+  "name": "Chord Progression Generator",
+  "author": "chordai",
+  "version": "1.0.0",
+  "type": "tool",
+  "category": "Music Production",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:07:58.458Z",
+  "license": "MIT",
+  "downloads": 31007,
+  "stars": 174,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

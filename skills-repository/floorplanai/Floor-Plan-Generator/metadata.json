@@ -1,0 +1,18 @@
+{
+  "name": "Floor Plan Generator",
+  "author": "floorplanai",
+  "version": "1.0.0",
+  "type": "tool",
+  "category": "Architecture & Interior Design",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:09:16.531Z",
+  "license": "MIT",
+  "downloads": 5760,
+  "stars": 23,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

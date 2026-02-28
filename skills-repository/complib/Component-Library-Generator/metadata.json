@@ -1,0 +1,18 @@
+{
+  "name": "Component Library Generator",
+  "author": "complib",
+  "version": "1.0.0",
+  "type": "workflow",
+  "category": "UI/UX Design",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:04:02.468Z",
+  "license": "MIT",
+  "downloads": 42978,
+  "stars": 298,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

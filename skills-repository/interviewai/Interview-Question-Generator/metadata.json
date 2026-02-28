@@ -1,0 +1,18 @@
+{
+  "name": "Interview Question Generator",
+  "author": "interviewai",
+  "version": "1.0.0",
+  "type": "tool",
+  "category": "Human Resources",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:07:09.023Z",
+  "license": "MIT",
+  "downloads": 2247,
+  "stars": 349,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

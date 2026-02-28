@@ -1,0 +1,18 @@
+{
+  "name": "Grant Proposal Writer",
+  "author": "grantai",
+  "version": "1.0.0",
+  "type": "prompt",
+  "category": "Academic Writing",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:02:18.350Z",
+  "license": "MIT",
+  "downloads": 8459,
+  "stars": 73,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

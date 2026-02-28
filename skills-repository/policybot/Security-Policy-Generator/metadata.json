@@ -1,0 +1,18 @@
+{
+  "name": "Security Policy Generator",
+  "author": "policybot",
+  "version": "1.0.0",
+  "type": "template",
+  "category": "Cybersecurity",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:03:41.917Z",
+  "license": "MIT",
+  "downloads": 5578,
+  "stars": 474,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

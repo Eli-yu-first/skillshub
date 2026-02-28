@@ -1,0 +1,18 @@
+{
+  "name": "Property Inspection Report",
+  "author": "inspectai",
+  "version": "1.0.0",
+  "type": "template",
+  "category": "Real Estate",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:07:27.228Z",
+  "license": "MIT",
+  "downloads": 14183,
+  "stars": 159,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

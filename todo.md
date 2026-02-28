@@ -85,3 +85,28 @@
 - [x] 每个模型提供商显示对应的 API Key 输入框（如 OpenAI API Key、Anthropic API Key 等）→ 提交到 GitHub
 - [x] API Key 输入支持密码遮罩和显示切换 → 提交到 GitHub
 - [x] API Key 存储到 Agent 配置中传递给运行页面 → 提交到 GitHub
+
+# New Feature Requests - Round 3
+
+## Skills 专业化内容
+- [x] 创建 skills-repository 文件夹存储所有 Skills 的 Markdown 文件 → 提交到 GitHub
+- [x] 为所有 Skills 编写专业、详细、符合行业规范的 README 内容 → 提交到 GitHub
+- [x] 将 Skills 内容提交到数据库 skill_files 表中 → 提交到 GitHub
+- [x] Skills 详情页展示完整专业内容 → 提交到 GitHub
+
+## Agent 真实 LLM 接入
+- [ ] Agent 运行页面接入真实大语言模型 API → 提交到 GitHub
+- [ ] 利用用户配置的 API Key 实现 AI 对话 → 提交到 GitHub
+- [ ] 实现任务调度：根据技能角色分派指令 → 提交到 GitHub
+
+## 用户个人主页
+- [ ] 创建用户个人主页页面 → 提交到 GitHub
+- [ ] 展示用户创建的技能列表 → 提交到 GitHub
+- [ ] 展示用户收藏的技能列表 → 提交到 GitHub
+- [ ] 展示用户创建的 Agent 列表 → 提交到 GitHub
+
+## 技能版本控制
+- [ ] 技能编辑器增加版本控制功能 → 提交到 GitHub
+- [ ] 查看技能变更历史 → 提交到 GitHub
+- [ ] 对比不同版本的技能差异 → 提交到 GitHub
+- [ ] 回滚到之前的版本 → 提交到 GitHub

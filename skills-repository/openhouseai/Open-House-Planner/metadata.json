@@ -1,0 +1,18 @@
+{
+  "name": "Open House Planner",
+  "author": "openhouseai",
+  "version": "1.0.0",
+  "type": "workflow",
+  "category": "Real Estate",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:07:31.136Z",
+  "license": "MIT",
+  "downloads": 36484,
+  "stars": 242,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

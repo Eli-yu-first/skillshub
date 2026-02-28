@@ -1,0 +1,18 @@
+{
+  "name": "Shipping Cost Estimator",
+  "author": "ship-calc",
+  "version": "1.0.0",
+  "type": "tool",
+  "category": "Supply Chain & Logistics",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:10:41.176Z",
+  "license": "MIT",
+  "downloads": 41217,
+  "stars": 356,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

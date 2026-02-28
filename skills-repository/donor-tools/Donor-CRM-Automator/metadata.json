@@ -1,0 +1,18 @@
+{
+  "name": "Donor CRM Automator",
+  "author": "donor-tools",
+  "version": "1.0.0",
+  "type": "rpa",
+  "category": "Non-profit & Social Impact",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:11:15.044Z",
+  "license": "MIT",
+  "downloads": 24206,
+  "stars": 259,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

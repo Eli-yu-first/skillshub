@@ -1,0 +1,18 @@
+{
+  "name": "Localization String Manager",
+  "author": "l10n-tools",
+  "version": "1.0.0",
+  "type": "tool",
+  "category": "Translation & Localization",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:10:09.936Z",
+  "license": "MIT",
+  "downloads": 3687,
+  "stars": 307,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}

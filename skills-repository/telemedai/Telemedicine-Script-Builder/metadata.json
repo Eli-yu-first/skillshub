@@ -1,0 +1,18 @@
+{
+  "name": "Telemedicine Script Builder",
+  "author": "telemedai",
+  "version": "1.0.0",
+  "type": "prompt",
+  "category": "General",
+  "created": "2025-12-01T00:00:00Z",
+  "updated": "2026-02-28T10:04:50.057Z",
+  "license": "MIT",
+  "downloads": 22234,
+  "stars": 492,
+  "dependencies": [],
+  "compatibility": {
+    "python": ">=3.9",
+    "node": ">=18",
+    "skillshub_cli": ">=1.0.0"
+  }
+}
