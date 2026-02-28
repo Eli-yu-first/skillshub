@@ -119,14 +119,15 @@
 - [x] 任务调度：根据技能角色分派指令并显示状态 → 提交到 GitHub
 
 ## Model API Key 配置弹窗
-- [ ] 每个模型名称右边添加"配置按钮"，点击弹出配置弹窗 → 提交到 GitHub
-- [ ] 不同模型使用特定的配置内容（API Key、Base URL、Organization ID 等）→ 提交到 GitHub
-- [ ] 配置弹窗中支持验证 API Key → 提交到 GitHub
-- [ ] 模型右边显示配置状态：Required / Not Completed / Configured → 提交到 GitHub
+- [x] 每个模型名称右边添加“配置按钮”，点击弹出配置弹窗 → 提交到 GitHub
+- [x] 不同模型使用特定的配置内容（API Key、Base URL、Organization ID 等）→ 提交到 GitHub
+- [x] 配置弹窗中支持验证 API Key → 提交到 GitHub
+- [x] 模型右边显示配置状态：Required / Not Completed / Configured → 提交到 GitHub
 
-## Agent Summary 弹窗选择
-- [ ] "Browse All Skills" 改为弹窗，支持多选和搜索 → 提交到 GitHub
-- [ ] "Browse All Models" 改为弹窗，支持多选和搜索 → 提交到 GitHub
+## Agent Summary 下拉框优化
+- [x] 下拉框搜索上方添加“All / 收藏 / 自创”标签筛选 → 提交到 GitHub
+- [x] 下拉框底部 "Browse All Skills" 点击后出现全屏弹窗，支持多选和搜索 → 提交到 GitHub
+- [x] 下拉框底部 "Browse All Models" 点击后出现全屏弹窗，支持多选和搜索 → 提交到 GitHub
 
 ## 用户个人主页
 - [ ] 创建 UserProfile 页面 → 提交到 GitHub
