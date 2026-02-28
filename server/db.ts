@@ -586,3 +586,24 @@ export async function updateSkillFiles(skillId: number, files: { path: string; n
     await db.insert(skillFiles).values(files.map(f => ({ skillId, ...f })));
   }
 }
+
+
+// User profile queries
+export async function getUserSkills(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  // Get user's openId first, then find skills by author
+  const user = await db.select().from(users).where(eq(users.id, userId)).limit(1);
+  if (!user.length) return [];
+  const userName = user[0].name || user[0].openId;
+  return db.select().from(skills).where(eq(skills.author, userName)).orderBy(desc(skills.createdAt)).limit(50);
+}
+
+export async function getUserAgents(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  const user = await db.select().from(users).where(eq(users.id, userId)).limit(1);
+  if (!user.length) return [];
+  const userName = user[0].name || user[0].openId;
+  return db.select().from(agents).where(eq(agents.author, userName)).orderBy(desc(agents.createdAt)).limit(50);
+}
