@@ -341,9 +341,9 @@ export default function Navbar() {
               title="GitHub Repository"
             >
               <img
-                src="https://d2xsxph8kpxj0f.cloudfront.net/310519663384881165/gf6zeY6KPGu2P4thu2bEhi/github-hand-drawn-logo_8bfb80a4.jpg"
+                src="https://d2xsxph8kpxj0f.cloudfront.net/310519663384881165/gf6zeY6KPGu2P4thu2bEhi/github_43f6890a.svg"
                 alt="GitHub"
-                className="w-7 h-7 object-contain rounded-full"
+                className="w-6 h-6 object-contain dark:invert"
               />
             </a>
             {isAuthenticated ? (
