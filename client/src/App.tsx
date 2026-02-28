@@ -24,7 +24,9 @@ import ComingSoon from "./pages/ComingSoon";
 import Deps from "./pages/Deps";
 import DepsCreate from "./pages/DepsCreate";
 import DepsDetail from "./pages/DepsDetail";
+import AgentRun from "./pages/AgentRun";
 import Profile from "./pages/Profile";
+import SkillCreate from "./pages/SkillCreate";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -43,6 +45,7 @@ function Router() {
       <Route path="/docs/:slug" component={Docs} />
       <Route path="/deps" component={Deps} />
       <Route path="/deps/create" component={DepsCreate} />
+      <Route path="/deps/:author/:slug/run" component={AgentRun} />
       <Route path="/deps/:author/:slug" component={DepsDetail} />
       <Route path="/models" component={Models} />
       <Route path="/models/:author/:name" component={ComingSoon} />
@@ -61,7 +64,7 @@ function Router() {
       <Route path="/forum" component={Community} />
       <Route path="/community/:section" component={ComingSoon} />
       <Route path="/profile" component={Profile} />
-      <Route path="/skills/new" component={ComingSoon} />
+      <Route path="/skills/new" component={SkillCreate} />
       <Route path="/contexts/new" component={ComingSoon} />
       <Route path="/playgrounds/new" component={ComingSoon} />
       <Route path="/404" component={NotFound} />

@@ -44,30 +44,44 @@
 - [x] 登录后右上角只显示用户头像，点击头像显示设置等操作的下拉框 → 提交到 GitHub
 
 ## 数据库与数据
-- [ ] 创建 skill_reviews 评价表（评分+评论）→ 提交到 GitHub
-- [ ] 为所有技能填充真实 README 内容和文件数据（模仿 anthropics/skills 结构）→ 提交到 GitHub
+- [x] 创建 skill_reviews 评价表（评分+评论）→ 提交到 GitHub
+- [x] 为所有技能填充真实 README 内容和文件数据（模仿 anthropics/skills 结构）→ 提交到 GitHub
 
 ## 技能详情页完善
-- [ ] README tab 完善（渲染真实 Markdown 内容）→ 提交到 GitHub
-- [ ] Files tab 完善（展示技能描述文件目录结构）→ 提交到 GitHub
-- [ ] Community tab 完善（评论/讨论功能）→ 提交到 GitHub
-- [ ] History tab 完善（版本历史/提交记录）→ 提交到 GitHub
-- [ ] Inference API tab 完善 → 提交到 GitHub
+- [x] README tab 完善（渲染真实 Markdown 内容）→ 提交到 GitHub
+- [x] Files tab 完善（展示技能描述文件目录结构）→ 提交到 GitHub
+- [x] Community tab 完善（评论/讨论功能）→ 提交到 GitHub
+- [x] History tab 完善（版本历史/提交记录）→ 提交到 GitHub
+- [x] Inference API tab 完善 → 提交到 GitHub
 
 ## 用户评价系统
-- [ ] 用户对技能打分和评论功能 → 提交到 GitHub
-- [ ] 相关技能推荐（基于分类和标签）→ 提交到 GitHub
+- [x] 用户对技能打分和评论功能 → 提交到 GitHub
+- [x] 相关技能推荐（基于分类和标签）→ 提交到 GitHub
 
 ## 搜索功能
-- [ ] 全文搜索引擎（支持 README 内容和标签搜索）→ 提交到 GitHub
-- [ ] 顶部搜索框模糊搜索（模仿 Hugging Face）→ 提交到 GitHub
+- [x] 全文搜索引擎（支持 README 内容和标签搜索）→ 提交到 GitHub
+- [x] 顶部搜索框模糊搜索（模仿 Hugging Face）→ 提交到 GitHub
 
 ## 技能创建与发布
-- [ ] 在线技能创建编辑器（Markdown 实时预览）→ 提交到 GitHub
-- [ ] 技能发布到平台功能 → 提交到 GitHub
-- [ ] Skills 仓库评论功能 → 提交到 GitHub
-- [ ] Skills 收藏功能 → 提交到 GitHub
-- [ ] Skills Fork 功能 → 提交到 GitHub
+- [x] 在线技能创建编辑器（Markdown 实时预览）→ 提交到 GitHub
+- [x] 技能发布到平台功能 → 提交到 GitHub
+- [x] Skills 仓库评论功能 → 提交到 GitHub
+- [x] Skills 收藏功能 → 提交到 GitHub
+- [x] Skills Fork 功能 → 提交到 GitHub
 
 ## 社交分享
-- [ ] 技能社交媒体分享功能 → 提交到 GitHub
+- [x] 技能社交媒体分享功能 → 提交到 GitHub
+
+## Agent 创建与运行
+- [x] Agent 创建页面重构：去掉先选 Skills/Models 步骤，在 Agent Summary 中直接添加 Skills/Models 下拉选择 → 提交到 GitHub
+- [x] Agent Summary 中 Skills 下拉框：支持多选、搜索、点击"All Skills"跳转 Skills 页面 → 提交到 GitHub
+- [x] Agent Summary 中 Models 下拉框：支持多选、搜索、点击"Models"跳转 Models 页面 → 提交到 GitHub
+- [x] Agent 发布后运行页面：左侧对话框 + 右侧已选 Skills 角色面板 → 提交到 GitHub
+- [x] Agent 运行页面：AI 任务调度系统，指令智能分派给对应技能模块 → 提交到 GitHub
+- [x] Agent 后端 API：创建/保存/运行/对话接口 → 提交到 GitHub
+
+## 模型 API Key 配置
+- [x] Agent 创建页面：选择模型后显示 API Key 配置区域 → 提交到 GitHub
+- [x] 每个模型提供商显示对应的 API Key 输入框（如 OpenAI API Key、Anthropic API Key 等）→ 提交到 GitHub
+- [x] API Key 输入支持密码遮罩和显示切换 → 提交到 GitHub
+- [x] API Key 存储到 Agent 配置中传递给运行页面 → 提交到 GitHub
