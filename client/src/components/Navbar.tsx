@@ -341,8 +341,8 @@ export default function Navbar() {
               title="GitHub Repository"
             >
               <img
-                src="https://d2xsxph8kpxj0f.cloudfront.net/310519663384874443/VRQPmB2sPmnMVF5FBa57oy/skillshub-logo-jvqKdRTAaGhKVNvcaysStw.webp"
-                alt="SkillsHub"
+                src="https://d2xsxph8kpxj0f.cloudfront.net/310519663384881165/gf6zeY6KPGu2P4thu2bEhi/github-hand-drawn-logo_8bfb80a4.jpg"
+                alt="GitHub"
                 className="w-7 h-7 object-contain rounded-full"
               />
             </a>
