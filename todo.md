@@ -27,31 +27,31 @@
 - [x] 扩展分类系统为分级目录（父子分类、子类别）
 - [x] 创建 user_favorites 收藏表
 - [x] 创建 agents 表和 agent_skills 关联表
-- [ ] 提交到 GitHub ✅
+- [x] 提交到 GitHub ✅
 
 ## Step 2: 50个领域分级分类和500+ Skills → 提交到 GitHub
 - [x] 生成50个专业领域的分级分类目录（含子分类，673个分类）
 - [x] 为每个领域生成10个高质量专业Skills（510个技能）
 - [x] 创建 skills-repository 文件存储（4076个文件、3385个提交记录）
-- [ ] 提交到 GitHub ✅
+- [x] 提交到 GitHub ✅
 
 ## Step 3: 技能详情页完善（接入真实数据） → 提交到 GitHub
-- [ ] README 标签页（从数据库读取真实 README 文件内容）
-- [ ] Files 标签页（从数据库读取真实文件树，模仿 GitHub 结构）
-- [ ] Community 标签页（从数据库读取真实讨论数据）
-- [ ] History 标签页（从数据库读取真实提交历史）
-- [ ] Inference API 标签页（完善 API 调用示例）
+- [x] README 标签页（从数据库读取真实 README 文件内容）
+- [x] Files 标签页（从数据库读取真实文件树，模仿 GitHub 结构）
+- [x] Community 标签页（从数据库读取真实讨论数据）
+- [x] History 标签页（从数据库读取真实提交历史）
+- [x] Inference API 标签页（完善 API 调用示例）
 - [ ] 提交到 GitHub ✅
 
 ## Step 4: 用户收藏功能 → 提交到 GitHub
-- [ ] 后端 API：收藏/取消收藏接口
-- [ ] 前端：技能详情页收藏按钮
-- [ ] 前端：个人主页已收藏列表页面
+- [x] 后端 API：收藏/取消收藏接口
+- [x] 前端：技能详情页收藏按钮
+- [x] 前端：个人主页已收藏列表页面
 - [ ] 提交到 GitHub ✅
 
 ## Step 5: 排序和分享功能 → 提交到 GitHub
-- [ ] 技能列表排序（热度、最新、字母顺序）
-- [ ] 技能详情页社交分享按钮（Twitter/X, LinkedIn, Facebook, 复制链接）
+- [x] 技能列表排序（热度、最新、字母顺序）
+- [x] 技能详情页社交分享按钮（Twitter/X, LinkedIn, Facebook, 复制链接）
 - [ ] 提交到 GitHub ✅
 
 ## Step 6: Deps/Agents 市场 → 提交到 GitHub

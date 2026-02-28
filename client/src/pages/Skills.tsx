@@ -19,7 +19,7 @@ const fadeIn = {
 export default function Skills() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const [sortBy, setSortBy] = useState<'trending' | 'likes' | 'downloads' | 'recent'>('trending');
+  const [sortBy, setSortBy] = useState<'trending' | 'likes' | 'downloads' | 'recent' | 'alphabetical'>('trending');
   const [showFilters, setShowFilters] = useState(false);
 
   // Fetch data from tRPC
@@ -39,6 +39,7 @@ export default function Skills() {
       case 'likes': return list.sort((a, b) => (b.likes ?? 0) - (a.likes ?? 0));
       case 'downloads': return list.sort((a, b) => (b.downloads ?? 0) - (a.downloads ?? 0));
       case 'recent': return list.sort((a, b) => new Date(b.updatedAt ?? 0).getTime() - new Date(a.updatedAt ?? 0).getTime());
+      case 'alphabetical': return list.sort((a, b) => (a.name ?? '').localeCompare(b.name ?? ''));
       default: return list.sort((a, b) => ((b.downloads ?? 0) + (b.likes ?? 0)) - ((a.downloads ?? 0) + (a.likes ?? 0)));
     }
   }, [skills, sortBy]);
@@ -91,6 +92,7 @@ export default function Skills() {
                 <option value="likes">Most Liked</option>
                 <option value="downloads">Most Downloaded</option>
                 <option value="recent">Recently Updated</option>
+                <option value="alphabetical">Alphabetical (A-Z)</option>
               </select>
             </div>
           </div>

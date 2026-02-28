@@ -18,6 +18,8 @@ import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import Logo from '@/components/Logo';
 import ThemeSwitcher from '@/components/ThemeSwitcher';
+import { useAuth } from '@/_core/hooks/useAuth';
+import { getLoginUrl } from '@/const';
 
 const GITHUB_REPO = 'https://github.com/Eli-yu-first/skillshub';
 
@@ -117,9 +119,7 @@ export default function Navbar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleAuthClick = () => {
-    toast('Feature coming soon', { description: 'Authentication will be available in the next release.' });
-  };
+  const { user, isAuthenticated, logout } = useAuth();
 
   return (
     <>
@@ -244,12 +244,32 @@ export default function Navbar() {
             >
               <Github className="w-[18px] h-[18px]" />
             </a>
-            <Button variant="ghost" size="sm" className="text-[13px] font-medium h-8 px-3" onClick={handleAuthClick}>
-              Log In
-            </Button>
-            <Button size="sm" className="text-[13px] font-medium h-8 px-4 shadow-sm" onClick={handleAuthClick}>
-              Sign Up
-            </Button>
+            {isAuthenticated ? (
+              <div className="flex items-center gap-2">
+                <Link href="/profile" className="flex items-center gap-2 px-2.5 py-1.5 text-[13px] font-medium rounded-md text-foreground/60 hover:text-foreground hover:bg-muted/60 transition-all">
+                  <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xs font-bold">
+                    {user?.name?.[0]?.toUpperCase() || 'U'}
+                  </div>
+                  {user?.name || 'Profile'}
+                </Link>
+                <Button variant="ghost" size="sm" className="text-[13px] font-medium h-8 px-3" onClick={() => logout()}>
+                  Log Out
+                </Button>
+              </div>
+            ) : (
+              <>
+                <a href={getLoginUrl()}>
+                  <Button variant="ghost" size="sm" className="text-[13px] font-medium h-8 px-3">
+                    Log In
+                  </Button>
+                </a>
+                <a href={getLoginUrl()}>
+                  <Button size="sm" className="text-[13px] font-medium h-8 px-4 shadow-sm">
+                    Sign Up
+                  </Button>
+                </a>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Toggle */}
@@ -335,12 +355,31 @@ export default function Navbar() {
                   <ThemeSwitcher />
                 </div>
                 <div className="flex gap-2">
-                  <Button variant="outline" size="sm" className="flex-1 text-sm h-10" onClick={handleAuthClick}>
-                    Log In
-                  </Button>
-                  <Button size="sm" className="flex-1 text-sm h-10" onClick={handleAuthClick}>
-                    Sign Up
-                  </Button>
+                  {isAuthenticated ? (
+                    <>
+                      <Link href="/profile" className="flex-1" onClick={() => setMobileOpen(false)}>
+                        <Button variant="outline" size="sm" className="w-full text-sm h-10">
+                          Profile
+                        </Button>
+                      </Link>
+                      <Button variant="outline" size="sm" className="flex-1 text-sm h-10" onClick={() => { logout(); setMobileOpen(false); }}>
+                        Log Out
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <a href={getLoginUrl()} className="flex-1">
+                        <Button variant="outline" size="sm" className="w-full text-sm h-10">
+                          Log In
+                        </Button>
+                      </a>
+                      <a href={getLoginUrl()} className="flex-1">
+                        <Button size="sm" className="w-full text-sm h-10">
+                          Sign Up
+                        </Button>
+                      </a>
+                    </>
+                  )}
                 </div>
               </div>
             </div>

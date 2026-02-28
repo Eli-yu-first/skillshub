@@ -5,7 +5,7 @@ import {
   categories, skills, contexts, playgrounds,
   discussions, discussionReplies, likes,
   organizations, agents, blogPosts, collections,
-  skillFiles, skillCommits,
+  skillFiles, skillCommits, userFavorites,
   type InsertSkill, type InsertContext, type InsertPlayground,
   type InsertCategory, type InsertAgent,
 } from "../drizzle/schema";
@@ -109,6 +109,7 @@ export async function getSkills(opts: {
     case 'trending': orderBy = desc(skills.downloads); break;
     case 'likes': orderBy = desc(skills.likes); break;
     case 'newest': orderBy = desc(skills.createdAt); break;
+    case 'alphabetical': orderBy = asc(skills.name); break;
     default: orderBy = desc(skills.downloads);
   }
 
@@ -327,6 +328,71 @@ export async function getCollections(limit = 20) {
     .where(eq(collections.isPublic, true))
     .orderBy(desc(collections.updatedAt))
     .limit(limit);
+}
+
+// ============================================================================
+// USER FAVORITES
+// ============================================================================
+export async function addFavorite(userId: number, targetType: string, targetId: number) {
+  const db = await getDb();
+  if (!db) return false;
+  try {
+    await db.insert(userFavorites).values({
+      userId,
+      targetType: targetType as any,
+      targetId,
+    });
+    return true;
+  } catch (e: any) {
+    if (e?.code === 'ER_DUP_ENTRY') return false;
+    throw e;
+  }
+}
+
+export async function removeFavorite(userId: number, targetType: string, targetId: number) {
+  const db = await getDb();
+  if (!db) return false;
+  await db.delete(userFavorites).where(
+    and(
+      eq(userFavorites.userId, userId),
+      eq(userFavorites.targetType, targetType as any),
+      eq(userFavorites.targetId, targetId)
+    )
+  );
+  return true;
+}
+
+export async function getUserFavorites(userId: number, targetType?: string) {
+  const db = await getDb();
+  if (!db) return [];
+  const conditions = [eq(userFavorites.userId, userId)];
+  if (targetType) conditions.push(eq(userFavorites.targetType, targetType as any));
+  return db.select().from(userFavorites)
+    .where(conditions.length > 1 ? and(...conditions) : conditions[0])
+    .orderBy(desc(userFavorites.createdAt));
+}
+
+export async function isFavorited(userId: number, targetType: string, targetId: number) {
+  const db = await getDb();
+  if (!db) return false;
+  const result = await db.select({ id: userFavorites.id }).from(userFavorites)
+    .where(and(
+      eq(userFavorites.userId, userId),
+      eq(userFavorites.targetType, targetType as any),
+      eq(userFavorites.targetId, targetId)
+    )).limit(1);
+  return result.length > 0;
+}
+
+export async function getUserFavoriteSkills(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  const favs = await db.select().from(userFavorites)
+    .where(and(eq(userFavorites.userId, userId), eq(userFavorites.targetType, 'skill')))
+    .orderBy(desc(userFavorites.createdAt));
+  if (favs.length === 0) return [];
+  const ids = favs.map(f => f.targetId);
+  return db.select().from(skills).where(inArray(skills.id, ids));
 }
 
 // ============================================================================

@@ -1,7 +1,7 @@
 import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
-import { publicProcedure, router } from "./_core/trpc";
+import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { z } from "zod";
 import {
   getAllCategories, getCategoryBySlug,
@@ -15,6 +15,7 @@ import {
   getBlogPosts,
   getCollections,
   getPlatformStats,
+  addFavorite, removeFavorite, getUserFavorites, isFavorited, getUserFavoriteSkills,
 } from "./db";
 
 export const appRouter = router({
@@ -136,6 +137,24 @@ export const appRouter = router({
     list: publicProcedure
       .input(z.object({ limit: z.number().optional() }).optional())
       .query(({ input }) => getCollections(input?.limit)),
+  }),
+
+  // Favorites
+  favorites: router({
+    add: protectedProcedure
+      .input(z.object({ targetType: z.string(), targetId: z.number() }))
+      .mutation(({ ctx, input }) => addFavorite(ctx.user.id, input.targetType, input.targetId)),
+    remove: protectedProcedure
+      .input(z.object({ targetType: z.string(), targetId: z.number() }))
+      .mutation(({ ctx, input }) => removeFavorite(ctx.user.id, input.targetType, input.targetId)),
+    list: protectedProcedure
+      .input(z.object({ targetType: z.string().optional() }).optional())
+      .query(({ ctx, input }) => getUserFavorites(ctx.user.id, input?.targetType)),
+    check: protectedProcedure
+      .input(z.object({ targetType: z.string(), targetId: z.number() }))
+      .query(({ ctx, input }) => isFavorited(ctx.user.id, input.targetType, input.targetId)),
+    skills: protectedProcedure
+      .query(({ ctx }) => getUserFavoriteSkills(ctx.user.id)),
   }),
 
   // Platform stats

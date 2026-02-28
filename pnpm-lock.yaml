@@ -128,7 +128,7 @@ importers:
         specifier: ^11.6.0
         version: 11.6.0(typescript@5.9.3)
       ai:
-        specifier: ^6.0.38
+        specifier: ^6.0.104
         version: 6.0.104(zod@4.1.12)
       axios:
         specifier: ^1.12.0

@@ -24,6 +24,7 @@ import ComingSoon from "./pages/ComingSoon";
 import Deps from "./pages/Deps";
 import DepsCreate from "./pages/DepsCreate";
 import DepsDetail from "./pages/DepsDetail";
+import Profile from "./pages/Profile";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -59,6 +60,7 @@ function Router() {
       <Route path="/learn" component={Community} />
       <Route path="/forum" component={Community} />
       <Route path="/community/:section" component={ComingSoon} />
+      <Route path="/profile" component={Profile} />
       <Route path="/skills/new" component={ComingSoon} />
       <Route path="/contexts/new" component={ComingSoon} />
       <Route path="/playgrounds/new" component={ComingSoon} />

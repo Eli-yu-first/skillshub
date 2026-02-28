@@ -1,19 +1,21 @@
 /**
- * SkillDetail Page - Complete skill detail view with README, files, community, inference
- * Redesigned to focus on Skill usage (not model usage)
+ * SkillDetail Page - Complete skill detail view with README, files, community, history, inference
+ * Uses real database data via tRPC
  */
 import { useState, useMemo } from 'react';
 import { useParams, Link } from 'wouter';
 import Layout from '@/components/Layout';
 import MarkdownRenderer from '@/components/MarkdownRenderer';
-import { getSkillReadme } from '@/lib/skillReadme';
-import { allSkills, formatNumber, getTypeIcon, getTypeColor, getTypeBgColor } from '@/lib/data';
+import { trpc } from '@/lib/trpc';
+import { useAuth } from '@/_core/hooks/useAuth';
+import { formatNumber, getTypeIcon, getTypeColor, getTypeBgColor } from '@/lib/data';
 import { motion } from 'framer-motion';
 import {
   Heart, Download, GitBranch, GitCommit, MessageSquare, Play, Copy, Check,
   FileText, Folder, ChevronRight, Clock, Tag, Share2,
-  Code2, Terminal, AlertCircle,
-  ChevronDown, File, FolderOpen
+  Code2, Terminal, AlertCircle, Bookmark, BookmarkCheck,
+  ChevronDown, File, FolderOpen, ExternalLink, Loader2,
+  Twitter, Linkedin, Facebook, Link2
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
@@ -23,60 +25,62 @@ type Tab = 'readme' | 'files' | 'community' | 'versions' | 'api';
 interface FileNode {
   name: string;
   type: 'file' | 'folder';
-  size?: string;
+  size?: number;
+  content?: string | null;
+  mimeType?: string | null;
   children?: FileNode[];
 }
 
-const sampleFiles: FileNode[] = [
-  { name: 'src', type: 'folder', children: [
-    { name: 'main.py', type: 'file', size: '4.2 KB' },
-    { name: 'config.py', type: 'file', size: '1.8 KB' },
-    { name: 'utils.py', type: 'file', size: '2.1 KB' },
-    { name: 'prompts', type: 'folder', children: [
-      { name: 'system.txt', type: 'file', size: '3.4 KB' },
-      { name: 'review.txt', type: 'file', size: '2.7 KB' },
-      { name: 'security.txt', type: 'file', size: '1.9 KB' },
-    ]},
-    { name: 'models', type: 'folder', children: [
-      { name: 'reviewer.py', type: 'file', size: '5.6 KB' },
-      { name: 'analyzer.py', type: 'file', size: '3.8 KB' },
-    ]},
-  ]},
-  { name: 'tests', type: 'folder', children: [
-    { name: 'test_main.py', type: 'file', size: '3.2 KB' },
-    { name: 'test_utils.py', type: 'file', size: '2.4 KB' },
-    { name: 'fixtures', type: 'folder', children: [
-      { name: 'sample_code.py', type: 'file', size: '1.1 KB' },
-    ]},
-  ]},
-  { name: 'README.md', type: 'file', size: '8.5 KB' },
-  { name: 'skill.yaml', type: 'file', size: '0.9 KB' },
-  { name: 'requirements.txt', type: 'file', size: '0.3 KB' },
-  { name: 'LICENSE', type: 'file', size: '1.1 KB' },
-  { name: '.gitignore', type: 'file', size: '0.2 KB' },
-];
+function buildFileTree(files: any[]): FileNode[] {
+  const root: FileNode[] = [];
+  const dirMap = new Map<string, FileNode>();
 
-const sampleCommits = [
-  { hash: 'a3f8c2d', message: 'feat: add security review mode with OWASP checks', author: 'skillsai', date: '2 hours ago', additions: 234, deletions: 45 },
-  { hash: 'b7e1d4f', message: 'fix: handle edge case in Python type annotation parsing', author: 'contributor-42', date: '5 hours ago', additions: 18, deletions: 12 },
-  { hash: 'c9a2e6b', message: 'docs: update API reference with new parameters', author: 'skillsai', date: '1 day ago', additions: 89, deletions: 23 },
-  { hash: 'd4f7a1c', message: 'perf: optimize multi-file review batch processing', author: 'perf-bot', date: '2 days ago', additions: 156, deletions: 78 },
-  { hash: 'e2b5c8d', message: 'feat: add support for Rust and Go code review', author: 'lang-team', date: '3 days ago', additions: 567, deletions: 12 },
-  { hash: 'f1d3e9a', message: 'test: add comprehensive test suite for security module', author: 'qa-team', date: '4 days ago', additions: 345, deletions: 0 },
-  { hash: 'g8c4b2e', message: 'refactor: extract common patterns into shared utilities', author: 'skillsai', date: '5 days ago', additions: 123, deletions: 189 },
-  { hash: 'h6a9d5f', message: 'chore: update dependencies and fix deprecation warnings', author: 'deps-bot', date: '1 week ago', additions: 34, deletions: 28 },
-];
+  // Sort: directories first, then files
+  const sorted = [...files].sort((a, b) => {
+    if (a.isDirectory && !b.isDirectory) return -1;
+    if (!a.isDirectory && b.isDirectory) return 1;
+    return a.name.localeCompare(b.name);
+  });
 
-const sampleDiscussions = [
-  { id: '1', title: 'Support for reviewing Terraform/HCL files?', author: 'devops-user', replies: 12, date: '3 hours ago', status: 'open' as const },
-  { id: '2', title: 'False positive on Python list comprehension complexity', author: 'python-dev', replies: 8, date: '1 day ago', status: 'resolved' as const },
-  { id: '3', title: 'Feature request: Custom rule definitions via YAML', author: 'enterprise-admin', replies: 23, date: '2 days ago', status: 'open' as const },
-  { id: '4', title: 'Integration with GitHub Actions - best practices?', author: 'ci-engineer', replies: 15, date: '3 days ago', status: 'resolved' as const },
-  { id: '5', title: 'Performance degradation with files > 1000 lines', author: 'perf-tester', replies: 6, date: '5 days ago', status: 'open' as const },
-];
+  for (const f of sorted) {
+    const node: FileNode = {
+      name: f.name,
+      type: f.isDirectory ? 'folder' : 'file',
+      size: f.size || undefined,
+      content: f.content,
+      mimeType: f.mimeType,
+      children: f.isDirectory ? [] : undefined,
+    };
 
-function FileTree({ nodes, depth = 0 }: { nodes: FileNode[]; depth?: number }) {
-  const [expanded, setExpanded] = useState<Set<string>>(new Set(['src', 'tests']));
+    if (f.isDirectory) {
+      const fullPath = f.path === '/' ? `/${f.name}` : `${f.path}/${f.name}`;
+      dirMap.set(fullPath, node);
+    }
+
+    if (f.path === '/') {
+      root.push(node);
+    } else {
+      const parent = dirMap.get(f.path);
+      if (parent && parent.children) {
+        parent.children.push(node);
+      } else {
+        root.push(node);
+      }
+    }
+  }
+
+  return root;
+}
+
+function formatFileSize(bytes?: number): string {
+  if (!bytes) return '';
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function FileTree({ nodes, depth = 0, onFileClick }: { nodes: FileNode[]; depth?: number; onFileClick?: (f: FileNode) => void }) {
+  const [expanded, setExpanded] = useState<Set<string>>(new Set(['src', 'tests', 'examples']));
 
   const toggle = (name: string) => {
     setExpanded(prev => {
@@ -94,7 +98,10 @@ function FileTree({ nodes, depth = 0 }: { nodes: FileNode[]; depth?: number }) {
           <div
             className="flex items-center gap-2 px-3 py-1.5 hover:bg-muted/50 cursor-pointer text-sm transition-colors"
             style={{ paddingLeft: `${depth * 20 + 12}px` }}
-            onClick={() => node.type === 'folder' && toggle(node.name)}
+            onClick={() => {
+              if (node.type === 'folder') toggle(node.name);
+              else if (onFileClick) onFileClick(node);
+            }}
           >
             {node.type === 'folder' ? (
               <>
@@ -108,13 +115,69 @@ function FileTree({ nodes, depth = 0 }: { nodes: FileNode[]; depth?: number }) {
               </>
             )}
             <span className="flex-1 truncate text-foreground">{node.name}</span>
-            {node.size && <span className="text-xs text-muted-foreground">{node.size}</span>}
+            {node.size !== undefined && node.size > 0 && <span className="text-xs text-muted-foreground">{formatFileSize(node.size)}</span>}
           </div>
           {node.type === 'folder' && expanded.has(node.name) && node.children && (
-            <FileTree nodes={node.children} depth={depth + 1} />
+            <FileTree nodes={node.children} depth={depth + 1} onFileClick={onFileClick} />
           )}
         </div>
       ))}
+    </div>
+  );
+}
+
+function ShareMenu({ author, name, description }: { author: string; name: string; description: string }) {
+  const [open, setOpen] = useState(false);
+  const url = typeof window !== 'undefined' ? window.location.href : '';
+  const text = `Check out ${author}/${name} on SkillsHub: ${description}`;
+
+  const share = (platform: string) => {
+    let shareUrl = '';
+    switch (platform) {
+      case 'twitter':
+        shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+        break;
+      case 'linkedin':
+        shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
+        break;
+      case 'facebook':
+        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+        break;
+      case 'copy':
+        navigator.clipboard.writeText(url);
+        toast.success('Link copied to clipboard');
+        setOpen(false);
+        return;
+    }
+    window.open(shareUrl, '_blank', 'width=600,height=400');
+    setOpen(false);
+  };
+
+  return (
+    <div className="relative">
+      <Button variant="outline" size="sm" onClick={() => setOpen(!open)} className="gap-1.5">
+        <Share2 className="w-4 h-4" />
+      </Button>
+      {open && (
+        <>
+          <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
+          <div className="absolute right-0 top-full mt-2 z-50 bg-popover text-popover-foreground border border-border rounded-lg shadow-lg p-2 min-w-[180px]">
+            <button onClick={() => share('twitter')} className="flex items-center gap-3 w-full px-3 py-2 text-sm rounded-md hover:bg-muted transition-colors">
+              <Twitter className="w-4 h-4" /> Share on X / Twitter
+            </button>
+            <button onClick={() => share('linkedin')} className="flex items-center gap-3 w-full px-3 py-2 text-sm rounded-md hover:bg-muted transition-colors">
+              <Linkedin className="w-4 h-4" /> Share on LinkedIn
+            </button>
+            <button onClick={() => share('facebook')} className="flex items-center gap-3 w-full px-3 py-2 text-sm rounded-md hover:bg-muted transition-colors">
+              <Facebook className="w-4 h-4" /> Share on Facebook
+            </button>
+            <div className="border-t border-border my-1" />
+            <button onClick={() => share('copy')} className="flex items-center gap-3 w-full px-3 py-2 text-sm rounded-md hover:bg-muted transition-colors">
+              <Link2 className="w-4 h-4" /> Copy Link
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 }
@@ -128,9 +191,75 @@ export default function SkillDetail() {
   const [apiOutput, setApiOutput] = useState('');
   const [apiLoading, setApiLoading] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<FileNode | null>(null);
 
-  const skill = useMemo(() => allSkills.find(s => s.author === author && s.name === name), [author, name]);
-  const readme = useMemo(() => getSkillReadme(name || ''), [name]);
+  const { user, isAuthenticated } = useAuth();
+
+  // Fetch skill data from tRPC
+  const { data: skill, isLoading: skillLoading } = trpc.skills.bySlug.useQuery(
+    { author: author || '', slug: name || '' },
+    { enabled: !!author && !!name }
+  );
+
+  // Fetch files
+  const { data: filesData } = trpc.skills.files.useQuery(
+    { skillId: skill?.id || 0 },
+    { enabled: !!skill?.id }
+  );
+
+  // Fetch commits
+  const { data: commitsData } = trpc.skills.commits.useQuery(
+    { skillId: skill?.id || 0 },
+    { enabled: !!skill?.id }
+  );
+
+  // Fetch discussions
+  const { data: discussionsData } = trpc.discussions.list.useQuery(
+    { targetType: 'skill', targetId: skill?.id || 0 },
+    { enabled: !!skill?.id }
+  );
+
+  // Check favorite status
+  const { data: isFav } = trpc.favorites.check.useQuery(
+    { targetType: 'skill', targetId: skill?.id || 0 },
+    { enabled: !!skill?.id && isAuthenticated }
+  );
+
+  const utils = trpc.useUtils();
+  const addFavMutation = trpc.favorites.add.useMutation({
+    onSuccess: () => {
+      utils.favorites.check.invalidate({ targetType: 'skill', targetId: skill?.id || 0 });
+      toast.success('Added to favorites');
+    },
+  });
+  const removeFavMutation = trpc.favorites.remove.useMutation({
+    onSuccess: () => {
+      utils.favorites.check.invalidate({ targetType: 'skill', targetId: skill?.id || 0 });
+      toast.success('Removed from favorites');
+    },
+  });
+
+  const fileTree = useMemo(() => buildFileTree(filesData || []), [filesData]);
+  const files = filesData || [];
+  const commits = commitsData || [];
+  const discussions_ = discussionsData || [];
+
+  // Get README content from files
+  const readmeContent = useMemo(() => {
+    const readmeFile = files.find(f => f.name === 'README.md' && f.path === '/');
+    return readmeFile?.content || `# ${skill?.name || name}\n\n${skill?.description || 'No README available.'}`;
+  }, [files, skill, name]);
+
+  if (skillLoading) {
+    return (
+      <Layout>
+        <div className="container py-20 text-center">
+          <Loader2 className="w-8 h-8 animate-spin mx-auto text-primary" />
+          <p className="text-muted-foreground mt-4">Loading skill...</p>
+        </div>
+      </Layout>
+    );
+  }
 
   if (!skill) {
     return (
@@ -144,6 +273,8 @@ export default function SkillDetail() {
       </Layout>
     );
   }
+
+  const tags = typeof skill.tags === 'string' ? JSON.parse(skill.tags) : (skill.tags || []);
 
   const handleApiTest = () => {
     setApiLoading(true);
@@ -174,13 +305,40 @@ export default function SkillDetail() {
     toast.success('Install command copied to clipboard');
   };
 
+  const handleFavoriteToggle = () => {
+    if (!isAuthenticated) {
+      toast.error('Please log in to add favorites');
+      return;
+    }
+    if (isFav) {
+      removeFavMutation.mutate({ targetType: 'skill', targetId: skill.id });
+    } else {
+      addFavMutation.mutate({ targetType: 'skill', targetId: skill.id });
+    }
+  };
+
+  const fileCount = files.filter(f => !f.isDirectory).length;
+
   const tabList: { id: Tab; label: string; icon: React.ReactNode; count?: number }[] = [
     { id: 'readme', label: 'README', icon: <FileText className="w-4 h-4" /> },
-    { id: 'files', label: 'Files', icon: <Folder className="w-4 h-4" />, count: 12 },
-    { id: 'community', label: 'Community', icon: <MessageSquare className="w-4 h-4" />, count: sampleDiscussions.length },
-    { id: 'versions', label: 'History', icon: <GitCommit className="w-4 h-4" />, count: sampleCommits.length },
+    { id: 'files', label: 'Files', icon: <Folder className="w-4 h-4" />, count: fileCount },
+    { id: 'community', label: 'Community', icon: <MessageSquare className="w-4 h-4" />, count: discussions_.length },
+    { id: 'versions', label: 'History', icon: <GitCommit className="w-4 h-4" />, count: commits.length },
     { id: 'api', label: 'Inference API', icon: <Play className="w-4 h-4" /> },
   ];
+
+  const formatTimeAgo = (date: Date | string) => {
+    const d = new Date(date);
+    const now = new Date();
+    const diff = now.getTime() - d.getTime();
+    const days = Math.floor(diff / 86400000);
+    if (days === 0) return 'today';
+    if (days === 1) return 'yesterday';
+    if (days < 7) return `${days} days ago`;
+    if (days < 30) return `${Math.floor(days / 7)} weeks ago`;
+    if (days < 365) return `${Math.floor(days / 30)} months ago`;
+    return `${Math.floor(days / 365)} years ago`;
+  };
 
   return (
     <Layout>
@@ -211,12 +369,15 @@ export default function SkillDetail() {
               </div>
               <p className="text-muted-foreground text-base mb-3">{skill.description}</p>
               <div className="flex items-center gap-3 flex-wrap">
-                {skill.tags.map(tag => (
+                {tags.map((tag: string) => (
                   <span key={tag} className="text-xs px-2.5 py-1 rounded-full border border-border text-muted-foreground hover:border-primary/30 transition-colors cursor-pointer">
                     {tag}
                   </span>
                 ))}
-                <span className="text-xs text-muted-foreground flex items-center gap-1"><Clock className="w-3 h-3" />Updated {skill.updatedAt}</span>
+                <span className="text-xs text-muted-foreground flex items-center gap-1">
+                  <Clock className="w-3 h-3" />
+                  Updated {formatTimeAgo(skill.updatedAt)}
+                </span>
               </div>
             </div>
 
@@ -229,15 +390,22 @@ export default function SkillDetail() {
                 className="gap-1.5"
               >
                 <Heart className={`w-4 h-4 ${liked ? 'fill-current' : ''}`} />
-                {formatNumber(skill.likes + (liked ? 1 : 0))}
+                {formatNumber((skill.likes ?? 0) + (liked ? 1 : 0))}
+              </Button>
+              <Button
+                variant={isFav ? 'default' : 'outline'}
+                size="sm"
+                onClick={handleFavoriteToggle}
+                className="gap-1.5"
+              >
+                {isFav ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
+                {isFav ? 'Saved' : 'Save'}
               </Button>
               <Button variant="outline" size="sm" onClick={() => toast.info('Feature coming soon')} className="gap-1.5">
                 <GitBranch className="w-4 h-4" />
                 Fork
               </Button>
-              <Button variant="outline" size="sm" onClick={() => { navigator.clipboard.writeText(window.location.href); toast.success('Link copied'); }} className="gap-1.5">
-                <Share2 className="w-4 h-4" />
-              </Button>
+              <ShareMenu author={author || ''} name={name || ''} description={skill.description || ''} />
             </div>
           </div>
         </motion.div>
@@ -254,11 +422,11 @@ export default function SkillDetail() {
 
         {/* Stats Bar */}
         <div className="flex items-center gap-6 text-sm text-muted-foreground mb-6 pb-6 border-b border-border flex-wrap">
-          <span className="flex items-center gap-1.5"><Download className="w-4 h-4" />{formatNumber(skill.downloads)} downloads</span>
-          <span className="flex items-center gap-1.5"><Heart className="w-4 h-4" />{formatNumber(skill.likes)} likes</span>
-          <span className="flex items-center gap-1.5"><GitCommit className="w-4 h-4" />{sampleCommits.length} commits</span>
-          <span className="flex items-center gap-1.5"><GitBranch className="w-4 h-4" />3 branches</span>
-          <span className="flex items-center gap-1.5"><Tag className="w-4 h-4" />v2.4.1</span>
+          <span className="flex items-center gap-1.5"><Download className="w-4 h-4" />{formatNumber(skill.downloads ?? 0)} downloads</span>
+          <span className="flex items-center gap-1.5"><Heart className="w-4 h-4" />{formatNumber(skill.likes ?? 0)} likes</span>
+          <span className="flex items-center gap-1.5"><GitCommit className="w-4 h-4" />{commits.length} commits</span>
+          <span className="flex items-center gap-1.5"><Folder className="w-4 h-4" />{fileCount} files</span>
+          <span className="flex items-center gap-1.5"><Tag className="w-4 h-4" />v{skill.version || '1.0.0'}</span>
         </div>
 
         {/* Tabs */}
@@ -266,7 +434,7 @@ export default function SkillDetail() {
           {tabList.map(tab => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
+              onClick={() => { setActiveTab(tab.id); setSelectedFile(null); }}
               className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-all -mb-px whitespace-nowrap ${
                 activeTab === tab.id
                   ? 'border-primary text-primary'
@@ -288,25 +456,49 @@ export default function SkillDetail() {
             {/* README Tab */}
             {activeTab === 'readme' && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                <MarkdownRenderer content={readme} />
+                <MarkdownRenderer content={readmeContent} />
               </motion.div>
             )}
 
             {/* Files Tab */}
             {activeTab === 'files' && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                <div className="border border-border rounded-lg overflow-hidden">
-                  <div className="flex items-center justify-between px-4 py-3 bg-muted/30 border-b border-border">
-                    <div className="flex items-center gap-2 text-sm">
-                      <GitBranch className="w-4 h-4 text-muted-foreground" />
-                      <span className="font-medium">main</span>
-                      <span className="text-muted-foreground">·</span>
-                      <span className="text-muted-foreground truncate max-w-xs">{sampleCommits[0].message}</span>
+                {selectedFile ? (
+                  <div>
+                    <div className="flex items-center gap-2 mb-4">
+                      <button onClick={() => setSelectedFile(null)} className="text-sm text-primary hover:underline">← Back to files</button>
+                      <span className="text-sm text-muted-foreground">/ {selectedFile.name}</span>
                     </div>
-                    <span className="text-xs text-muted-foreground">{sampleCommits[0].date}</span>
+                    <div className="border border-border rounded-lg overflow-hidden">
+                      <div className="flex items-center justify-between px-4 py-2 bg-muted/30 border-b border-border">
+                        <span className="text-sm font-medium">{selectedFile.name}</span>
+                        <span className="text-xs text-muted-foreground">{formatFileSize(selectedFile.size)}</span>
+                      </div>
+                      <pre className="p-4 text-sm font-mono overflow-x-auto bg-background">
+                        <code>{selectedFile.content || '// No content available'}</code>
+                      </pre>
+                    </div>
                   </div>
-                  <FileTree nodes={sampleFiles} />
-                </div>
+                ) : (
+                  <div className="border border-border rounded-lg overflow-hidden">
+                    <div className="flex items-center justify-between px-4 py-3 bg-muted/30 border-b border-border">
+                      <div className="flex items-center gap-2 text-sm">
+                        <GitBranch className="w-4 h-4 text-muted-foreground" />
+                        <span className="font-medium">main</span>
+                        {commits.length > 0 && (
+                          <>
+                            <span className="text-muted-foreground">·</span>
+                            <span className="text-muted-foreground truncate max-w-xs">{commits[0].message}</span>
+                          </>
+                        )}
+                      </div>
+                      {commits.length > 0 && (
+                        <span className="text-xs text-muted-foreground">{formatTimeAgo(commits[0].createdAt)}</span>
+                      )}
+                    </div>
+                    <FileTree nodes={fileTree} onFileClick={(f) => setSelectedFile(f)} />
+                  </div>
+                )}
               </motion.div>
             )}
 
@@ -314,58 +506,75 @@ export default function SkillDetail() {
             {activeTab === 'community' && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="font-display font-semibold text-lg">Discussions</h2>
+                  <h2 className="font-display font-semibold text-lg">Discussions ({discussions_.length})</h2>
                   <Button size="sm" onClick={() => toast.info('Feature coming soon')}>New Discussion</Button>
                 </div>
-                <div className="space-y-3">
-                  {sampleDiscussions.map(d => (
-                    <div key={d.id} className="flex items-center gap-4 p-4 border border-border rounded-lg hover:border-primary/20 transition-all cursor-pointer">
-                      <div className={`w-2 h-2 rounded-full shrink-0 ${d.status === 'open' ? 'bg-green-500' : 'bg-purple-500'}`} />
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-medium text-sm mb-1 truncate">{d.title}</h3>
-                        <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                          <span>{d.author}</span>
-                          <span>{d.date}</span>
-                          <span className={`px-1.5 py-0.5 rounded-full text-[10px] ${d.status === 'open' ? 'bg-green-500/10 text-green-600' : 'bg-purple-500/10 text-purple-600'}`}>
-                            {d.status}
-                          </span>
+                {discussions_.length === 0 ? (
+                  <div className="text-center py-12 text-muted-foreground">
+                    <MessageSquare className="w-12 h-12 mx-auto mb-3 opacity-30" />
+                    <p>No discussions yet. Be the first to start one!</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {discussions_.map((d: any) => (
+                      <div key={d.id} className="flex items-center gap-4 p-4 border border-border rounded-lg hover:border-primary/20 transition-all cursor-pointer">
+                        <div className={`w-2 h-2 rounded-full shrink-0 ${d.status === 'open' ? 'bg-green-500' : d.status === 'resolved' ? 'bg-purple-500' : 'bg-gray-400'}`} />
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-medium text-sm mb-1 truncate">{d.title}</h3>
+                          <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                            <span>{formatTimeAgo(d.createdAt)}</span>
+                            <span className={`px-1.5 py-0.5 rounded-full text-[10px] ${
+                              d.status === 'open' ? 'bg-green-500/10 text-green-600' :
+                              d.status === 'resolved' ? 'bg-purple-500/10 text-purple-600' :
+                              'bg-gray-500/10 text-gray-600'
+                            }`}>
+                              {d.status}
+                            </span>
+                          </div>
                         </div>
+                        <span className="flex items-center gap-1 text-xs text-muted-foreground shrink-0">
+                          <MessageSquare className="w-3.5 h-3.5" />{d.replyCount || 0}
+                        </span>
                       </div>
-                      <span className="flex items-center gap-1 text-xs text-muted-foreground shrink-0">
-                        <MessageSquare className="w-3.5 h-3.5" />{d.replies}
-                      </span>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                )}
               </motion.div>
             )}
 
-            {/* Versions Tab */}
+            {/* History Tab */}
             {activeTab === 'versions' && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                <h2 className="font-display font-semibold text-lg mb-4">Commit History</h2>
-                <div className="space-y-0">
-                  {sampleCommits.map((commit, i) => (
-                    <div key={commit.hash} className="flex items-start gap-4 p-4 border-b border-border last:border-0 hover:bg-muted/30 transition-colors">
-                      <div className="flex flex-col items-center shrink-0">
-                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                          <GitCommit className="w-4 h-4 text-primary" />
+                <h2 className="font-display font-semibold text-lg mb-4">Commit History ({commits.length})</h2>
+                {commits.length === 0 ? (
+                  <div className="text-center py-12 text-muted-foreground">
+                    <GitCommit className="w-12 h-12 mx-auto mb-3 opacity-30" />
+                    <p>No commit history available.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-0">
+                    {commits.map((commit: any, i: number) => (
+                      <div key={commit.id} className="flex items-start gap-4 p-4 border-b border-border last:border-0 hover:bg-muted/30 transition-colors">
+                        <div className="flex flex-col items-center shrink-0">
+                          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                            <GitCommit className="w-4 h-4 text-primary" />
+                          </div>
+                          {i < commits.length - 1 && <div className="w-px h-full bg-border mt-1" />}
                         </div>
-                        {i < sampleCommits.length - 1 && <div className="w-px h-full bg-border mt-1" />}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium text-sm mb-1">{commit.message}</p>
-                        <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                          <span className="font-mono text-primary">{commit.hash}</span>
-                          <span>{commit.author}</span>
-                          <span>{commit.date}</span>
-                          <span className="text-green-600">+{commit.additions}</span>
-                          <span className="text-red-500">-{commit.deletions}</span>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-sm mb-1">{commit.message}</p>
+                          <div className="flex items-center gap-3 text-xs text-muted-foreground flex-wrap">
+                            <span className="font-mono text-primary">{commit.hash?.substring(0, 7)}</span>
+                            <span>{commit.authorName}</span>
+                            <span>{formatTimeAgo(commit.createdAt)}</span>
+                            {commit.additions > 0 && <span className="text-green-600">+{commit.additions}</span>}
+                            {commit.deletions > 0 && <span className="text-red-500">-{commit.deletions}</span>}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                )}
               </motion.div>
             )}
 
@@ -378,7 +587,6 @@ export default function SkillDetail() {
                 </p>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                  {/* Input */}
                   <div>
                     <label className="text-sm font-medium text-foreground mb-2 block">Input</label>
                     <textarea
@@ -402,7 +610,6 @@ export default function SkillDetail() {
                     </div>
                   </div>
 
-                  {/* Output */}
                   <div>
                     <label className="text-sm font-medium text-foreground mb-2 block">Output</label>
                     <div className="w-full h-64 p-4 rounded-lg border border-border bg-muted/30 font-mono text-sm overflow-auto">
@@ -434,7 +641,19 @@ export default function SkillDetail() {
 {`curl -X POST https://api.skillshub.dev/v1/skills/${author}/${name}/run \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
   -H "Content-Type: application/json" \\
-  -d '{"code": "your code here", "language": "auto"}'`}
+  -d '{"input": {"prompt": "your input here"}}'`}
+                    </pre>
+                  </div>
+                  <div className="mt-3">
+                    <h4 className="text-xs font-medium text-muted-foreground mb-2">Python SDK</h4>
+                    <pre className="p-3 bg-background rounded-md border border-border text-xs font-mono overflow-x-auto">
+{`from skillshub import SkillsHub
+
+client = SkillsHub(api_key="YOUR_API_KEY")
+result = client.skills.run("${author}/${name}", {
+    "prompt": "your input here"
+})
+print(result.output)`}
                     </pre>
                   </div>
                 </div>
@@ -456,23 +675,23 @@ export default function SkillDetail() {
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">Downloads</span>
-                  <span className="font-medium">{formatNumber(skill.downloads)}</span>
+                  <span className="font-medium">{formatNumber(skill.downloads ?? 0)}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">Likes</span>
-                  <span className="font-medium">{formatNumber(skill.likes)}</span>
+                  <span className="font-medium">{formatNumber(skill.likes ?? 0)}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">Version</span>
-                  <span className="font-mono text-xs">v2.4.1</span>
+                  <span className="font-mono text-xs">v{skill.version || '1.0.0'}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">License</span>
-                  <span className="text-xs">MIT</span>
+                  <span className="text-xs">{skill.license || 'MIT'}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">Updated</span>
-                  <span className="text-xs">{skill.updatedAt}</span>
+                  <span className="text-xs">{formatTimeAgo(skill.updatedAt)}</span>
                 </div>
               </div>
             </div>
@@ -497,7 +716,7 @@ export default function SkillDetail() {
             <div className="border border-border rounded-xl p-5 bg-card">
               <h3 className="font-display font-semibold text-sm mb-4">Tags</h3>
               <div className="flex flex-wrap gap-2">
-                {skill.tags.map(tag => (
+                {tags.map((tag: string) => (
                   <Link key={tag} href={`/skills?tag=${tag}`}>
                     <span className="text-xs px-2.5 py-1 rounded-full border border-border text-muted-foreground hover:border-primary/30 hover:text-primary transition-all cursor-pointer">
                       {tag}
