@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import SkillVersionControl from '@/components/SkillVersionControl';
 
 type Tab = 'readme' | 'files' | 'community' | 'versions' | 'api';
 
@@ -594,39 +595,10 @@ export default function SkillDetail() {
               </motion.div>
             )}
 
-            {/* History Tab */}
+            {/* History Tab - Version Control */}
             {activeTab === 'versions' && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                <h2 className="font-display font-semibold text-lg mb-4">Commit History ({commits.length})</h2>
-                {commits.length === 0 ? (
-                  <div className="text-center py-12 text-muted-foreground">
-                    <GitCommit className="w-12 h-12 mx-auto mb-3 opacity-30" />
-                    <p>No commit history available.</p>
-                  </div>
-                ) : (
-                  <div className="space-y-0">
-                    {commits.map((commit: any, i: number) => (
-                      <div key={commit.id} className="flex items-start gap-4 p-4 border-b border-border last:border-0 hover:bg-muted/30 transition-colors">
-                        <div className="flex flex-col items-center shrink-0">
-                          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                            <GitCommit className="w-4 h-4 text-primary" />
-                          </div>
-                          {i < commits.length - 1 && <div className="w-px h-full bg-border mt-1" />}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="font-medium text-sm mb-1">{commit.message}</p>
-                          <div className="flex items-center gap-3 text-xs text-muted-foreground flex-wrap">
-                            <span className="font-mono text-primary">{commit.hash?.substring(0, 7)}</span>
-                            <span>{commit.authorName}</span>
-                            <span>{formatTimeAgo(commit.createdAt)}</span>
-                            {commit.additions > 0 && <span className="text-green-600">+{commit.additions}</span>}
-                            {commit.deletions > 0 && <span className="text-red-500">-{commit.deletions}</span>}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                <SkillVersionControl skillId={skill.id} skillAuthor={skill.author} />
               </motion.div>
             )}
 

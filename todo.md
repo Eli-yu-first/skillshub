@@ -95,21 +95,21 @@
 - [x] Skills 详情页展示完整专业内容 → 提交到 GitHub
 
 ## Agent 真实 LLM 接入
-- [ ] Agent 运行页面接入真实大语言模型 API → 提交到 GitHub
-- [ ] 利用用户配置的 API Key 实现 AI 对话 → 提交到 GitHub
-- [ ] 实现任务调度：根据技能角色分派指令 → 提交到 GitHub
+- [x] Agent 运行页面接入真实大语言模型 API → 提交到 GitHub
+- [x] 利用用户配置的 API Key 实现 AI 对话 → 提交到 GitHub
+- [x] 实现任务调度：根据技能角色分派指令 → 提交到 GitHub
 
 ## 用户个人主页
-- [ ] 创建用户个人主页页面 → 提交到 GitHub
-- [ ] 展示用户创建的技能列表 → 提交到 GitHub
-- [ ] 展示用户收藏的技能列表 → 提交到 GitHub
-- [ ] 展示用户创建的 Agent 列表 → 提交到 GitHub
+- [x] 创建用户个人主页页面 → 提交到 GitHub
+- [x] 展示用户创建的技能列表 → 提交到 GitHub
+- [x] 展示用户收藏的技能列表 → 提交到 GitHub
+- [x] 展示用户创建的 Agent 列表 → 提交到 GitHub
 
 ## 技能版本控制
-- [ ] 技能编辑器增加版本控制功能 → 提交到 GitHub
-- [ ] 查看技能变更历史 → 提交到 GitHub
-- [ ] 对比不同版本的技能差异 → 提交到 GitHub
-- [ ] 回滚到之前的版本 → 提交到 GitHub
+- [x] 技能编辑器增加版本控制功能 → 提交到 GitHub
+- [x] 查看技能变更历史 → 提交到 GitHub
+- [x] 对比不同版本的技能差异 → 提交到 GitHub
+- [x] 回滚到之前的版本 → 提交到 GitHub
 
 # New Feature Requests - Round 4
 
@@ -136,7 +136,7 @@
 - [x] 展示用户创建的 Agent 列表 → 提交到 GitHub
 
 ## 技能版本控制
-- [ ] 技能编辑器版本控制功能 → 提交到 GitHub
-- [ ] 查看技能变更历史 → 提交到 GitHub
-- [ ] 对比不同版本差异 → 提交到 GitHub
-- [ ] 回滚到之前版本 → 提交到 GitHub
+- [x] 技能编辑器版本控制功能 → 提交到 GitHub
+- [x] 查看技能变更历史 → 提交到 GitHub
+- [x] 对比不同版本差异 → 提交到 GitHub
+- [x] 回滚到之前版本 → 提交到 GitHub

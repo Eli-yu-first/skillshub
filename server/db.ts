@@ -607,3 +607,61 @@ export async function getUserAgents(userId: number) {
   const userName = user[0].name || user[0].openId;
   return db.select().from(agents).where(eq(agents.author, userName)).orderBy(desc(agents.createdAt)).limit(50);
 }
+
+// ── Version Control ──
+export async function createSkillCommit(data: {
+  skillId: number;
+  message: string;
+  authorName: string;
+  additions?: number;
+  deletions?: number;
+  snapshot?: string;
+}) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const hash = Array.from({ length: 8 }, () => Math.floor(Math.random() * 16).toString(16)).join('');
+  await db.insert(skillCommits).values({
+    ...data,
+    hash,
+  });
+  return { hash };
+}
+
+export async function getSkillCommitByHash(skillId: number, hash: string) {
+  const db = await getDb();
+  if (!db) return null;
+  const result = await db.select().from(skillCommits)
+    .where(and(eq(skillCommits.skillId, skillId), eq(skillCommits.hash, hash)))
+    .limit(1);
+  return result[0] || null;
+}
+
+export async function rollbackSkillToCommit(skillId: number, commitHash: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const commit = await getSkillCommitByHash(skillId, commitHash);
+  if (!commit || !commit.snapshot) throw new Error("Commit not found or no snapshot");
+  const snapshot = JSON.parse(commit.snapshot);
+  // Restore files from snapshot
+  if (snapshot.files) {
+    // Delete current files
+    await db.delete(skillFiles).where(eq(skillFiles.skillId, skillId));
+    // Insert snapshot files
+    for (const file of snapshot.files) {
+      await db.insert(skillFiles).values({
+        skillId,
+        path: file.path,
+        name: file.name,
+        content: file.content,
+        size: file.size || 0,
+        mimeType: file.mimeType || null,
+        isDirectory: file.isDirectory || false,
+      });
+    }
+  }
+  // Restore readme if present
+  if (snapshot.readme !== undefined) {
+    await db.update(skills).set({ readme: snapshot.readme }).where(eq(skills.id, skillId));
+  }
+  return { success: true };
+}

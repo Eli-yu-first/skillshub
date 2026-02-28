@@ -20,6 +20,7 @@ import {
   getRelatedSkills, forkSkill, searchSkillsFullText,
   createSkill, updateSkill, createSkillFile, updateSkillFiles,
   getUserSkills, getUserAgents,
+  createSkillCommit, getSkillCommitByHash, rollbackSkillToCommit,
 } from "./db";
 import { invokeLLM } from "./_core/llm";
 
@@ -144,6 +145,25 @@ export const appRouter = router({
     fork: protectedProcedure
       .input(z.object({ skillId: z.number() }))
       .mutation(({ ctx, input }) => forkSkill(input.skillId, ctx.user.id, ctx.user.name || 'Anonymous')),
+    // Version control
+    createCommit: protectedProcedure
+      .input(z.object({
+        skillId: z.number(),
+        message: z.string().min(1),
+        snapshot: z.string().optional(),
+        additions: z.number().optional(),
+        deletions: z.number().optional(),
+      }))
+      .mutation(({ ctx, input }) => createSkillCommit({
+        ...input,
+        authorName: ctx.user.name || 'Anonymous',
+      })),
+    commitDetail: publicProcedure
+      .input(z.object({ skillId: z.number(), hash: z.string() }))
+      .query(({ input }) => getSkillCommitByHash(input.skillId, input.hash)),
+    rollback: protectedProcedure
+      .input(z.object({ skillId: z.number(), commitHash: z.string() }))
+      .mutation(({ input }) => rollbackSkillToCommit(input.skillId, input.commitHash)),
   }),
 
   // Contexts

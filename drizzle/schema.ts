@@ -103,10 +103,10 @@ export const skillCommits = mysqlTable("skill_commits", {
   message: text("message").notNull(),
   authorName: varchar("authorName", { length: 128 }),
   additions: int("additions").default(0),
-  deletions: int("deletions").default(0),
+   deletions: int("deletions").default(0),
+  snapshot: text("snapshot"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
-
 export type SkillCommit = typeof skillCommits.$inferSelect;
 
 // ============================================================================
