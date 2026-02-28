@@ -110,3 +110,32 @@
 - [ ] 查看技能变更历史 → 提交到 GitHub
 - [ ] 对比不同版本的技能差异 → 提交到 GitHub
 - [ ] 回滚到之前的版本 → 提交到 GitHub
+
+# New Feature Requests - Round 4
+
+## AgentRun 真实 LLM 前端
+- [x] AgentRun 前端调用 agentChat.send tRPC API 实现真实对话 → 提交到 GitHub
+- [x] 支持用户 API Key 和内置 LLM 双模式 → 提交到 GitHub
+- [x] 任务调度：根据技能角色分派指令并显示状态 → 提交到 GitHub
+
+## Model API Key 配置弹窗
+- [ ] 每个模型名称右边添加"配置按钮"，点击弹出配置弹窗 → 提交到 GitHub
+- [ ] 不同模型使用特定的配置内容（API Key、Base URL、Organization ID 等）→ 提交到 GitHub
+- [ ] 配置弹窗中支持验证 API Key → 提交到 GitHub
+- [ ] 模型右边显示配置状态：Required / Not Completed / Configured → 提交到 GitHub
+
+## Agent Summary 弹窗选择
+- [ ] "Browse All Skills" 改为弹窗，支持多选和搜索 → 提交到 GitHub
+- [ ] "Browse All Models" 改为弹窗，支持多选和搜索 → 提交到 GitHub
+
+## 用户个人主页
+- [ ] 创建 UserProfile 页面 → 提交到 GitHub
+- [ ] 展示用户创建的技能列表 → 提交到 GitHub
+- [ ] 展示用户收藏的技能列表 → 提交到 GitHub
+- [ ] 展示用户创建的 Agent 列表 → 提交到 GitHub
+
+## 技能版本控制
+- [ ] 技能编辑器版本控制功能 → 提交到 GitHub
+- [ ] 查看技能变更历史 → 提交到 GitHub
+- [ ] 对比不同版本差异 → 提交到 GitHub
+- [ ] 回滚到之前版本 → 提交到 GitHub

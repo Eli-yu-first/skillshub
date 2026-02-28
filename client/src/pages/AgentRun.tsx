@@ -1,20 +1,21 @@
 /**
  * Agent Run Page - AI Task Dispatch System
- * Left: Chat interface for user commands
+ * Left: Chat interface with real LLM integration
  * Right: Selected skills as "team members" (roles) that receive dispatched tasks
  */
-import { useState, useRef, useEffect, useMemo } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Link, useRoute } from 'wouter';
 import Layout from '@/components/Layout';
 import MarkdownRenderer from '@/components/MarkdownRenderer';
 import {
-  Send, Bot, User, Zap, ArrowLeft, Settings, Cpu,
-  Loader2, Sparkles, ChevronRight, Activity, Clock,
-  CheckCircle2, AlertCircle, RotateCcw, Copy, Check
+  Send, Bot, User, Zap, ArrowLeft, Cpu,
+  Loader2, Sparkles, Activity,
+  CheckCircle2, AlertCircle
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
+import { trpc } from '@/lib/trpc';
 
 interface AgentConfig {
   name: string;
@@ -24,6 +25,7 @@ interface AgentConfig {
   maxTokens: number;
   skills: { id: string; name: string; author: string; type: string }[];
   models: { id: string; name: string; provider: string; icon: string }[];
+  apiKeys?: Record<string, string>;
 }
 
 interface ChatMessage {
@@ -32,6 +34,9 @@ interface ChatMessage {
   content: string;
   timestamp: Date;
   dispatched?: { skillName: string; status: 'pending' | 'running' | 'done' | 'error' }[];
+  model?: string;
+  provider?: string;
+  tokensUsed?: number;
 }
 
 interface SkillStatus {
@@ -64,19 +69,18 @@ const ROLE_ICONS: Record<string, string> = {
 
 export default function AgentRun() {
   const [, params] = useRoute('/deps/:author/:slug');
-  const author = params?.author || '';
-  const slug = params?.slug || '';
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
-  const [copied, setCopied] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
-  // Load agent config from sessionStorage
   const [agentConfig, setAgentConfig] = useState<AgentConfig | null>(null);
   const [skillStatuses, setSkillStatuses] = useState<SkillStatus[]>([]);
+
+  // tRPC mutation for real LLM chat
+  const chatMutation = trpc.agentChat.send.useMutation();
 
   useEffect(() => {
     const stored = sessionStorage.getItem('agent_config');
@@ -92,11 +96,10 @@ export default function AgentRun() {
           status: 'idle',
           taskCount: 0,
         })));
-        // Welcome message
         setMessages([{
           id: 'welcome',
           role: 'system',
-          content: `**${config.name}** is ready. This agent has ${config.skills.length} skill${config.skills.length > 1 ? 's' : ''} and ${config.models.length} model${config.models.length > 1 ? 's' : ''} configured. Your instructions will be intelligently dispatched to the appropriate skill modules.`,
+          content: `**${config.name}** is ready with ${config.skills.length} skill${config.skills.length > 1 ? 's' : ''} and ${config.models.length} model${config.models.length > 1 ? 's' : ''}. Your instructions will be intelligently dispatched to the appropriate skill modules.\n\n*Powered by ${config.models.length > 0 ? config.models.map(m => m.name).join(', ') : 'SkillsHub Built-in LLM'}*`,
           timestamp: new Date(),
         }]);
       } catch { /* ignore */ }
@@ -107,57 +110,78 @@ export default function AgentRun() {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Simulate AI task dispatch
-  const simulateDispatch = async (userMessage: string) => {
+  // Real LLM dispatch
+  const handleDispatch = async (userMessage: string) => {
     if (!agentConfig) return;
-
     setIsProcessing(true);
 
-    // Determine which skills to dispatch to based on keywords
-    const relevantSkills = agentConfig.skills.length > 0
-      ? agentConfig.skills.slice(0, Math.min(3, Math.max(1, Math.floor(Math.random() * agentConfig.skills.length) + 1)))
-      : [];
+    // Activate all skills
+    setSkillStatuses(prev => prev.map(s => ({
+      ...s, status: 'active' as const, lastTask: userMessage.slice(0, 50)
+    })));
 
-    // Update skill statuses to "active"
-    const dispatchedSkillNames = relevantSkills.map(s => s.name);
-    setSkillStatuses(prev => prev.map(s =>
-      dispatchedSkillNames.includes(s.name)
-        ? { ...s, status: 'active' as const, lastTask: userMessage.slice(0, 50) }
-        : s
-    ));
+    try {
+      // Build conversation history for context
+      const chatHistory = messages
+        .filter(m => m.role !== 'system')
+        .slice(-10)
+        .map(m => ({ role: m.role as 'user' | 'assistant', content: m.content }));
 
-    // Simulate processing delay
-    await new Promise(r => setTimeout(r, 1500 + Math.random() * 2000));
+      chatHistory.push({ role: 'user', content: userMessage });
 
-    // Build response
-    const skillResponses = relevantSkills.map(s =>
-      `**${ROLE_ICONS[s.type] || '🔧'} ${s.name}**: Task processed successfully.`
-    ).join('\n\n');
+      // Determine which API key and provider to use
+      const primaryModel = agentConfig.models[0];
+      const provider = primaryModel?.provider;
+      const apiKey = provider && agentConfig.apiKeys ? agentConfig.apiKeys[provider] : undefined;
 
-    const response = `I've dispatched your request to ${relevantSkills.length} skill module${relevantSkills.length > 1 ? 's' : ''}:\n\n${skillResponses}\n\n---\n\n**Summary**: Your instruction "${userMessage.slice(0, 80)}${userMessage.length > 80 ? '...' : ''}" has been processed by the team. All modules reported successful completion.`;
+      const result = await chatMutation.mutateAsync({
+        messages: chatHistory,
+        systemPrompt: agentConfig.systemPrompt,
+        temperature: agentConfig.temperature,
+        maxTokens: agentConfig.maxTokens,
+        skills: agentConfig.skills.map(s => ({ name: s.name, type: s.type })),
+        modelProvider: provider,
+        apiKey: apiKey,
+      });
 
-    // Update skill statuses to "done"
-    setSkillStatuses(prev => prev.map(s =>
-      dispatchedSkillNames.includes(s.name)
-        ? { ...s, status: 'done' as const, taskCount: s.taskCount + 1 }
-        : s
-    ));
+      // Mark skills as done
+      setSkillStatuses(prev => prev.map(s => ({
+        ...s, status: 'done' as const, taskCount: s.taskCount + 1
+      })));
 
-    // Add assistant message
-    setMessages(prev => [...prev, {
-      id: `msg-${Date.now()}`,
-      role: 'assistant',
-      content: response,
-      timestamp: new Date(),
-      dispatched: relevantSkills.map(s => ({ skillName: s.name, status: 'done' as const })),
-    }]);
+      // Add assistant response
+      setMessages(prev => [...prev, {
+        id: `msg-${Date.now()}`,
+        role: 'assistant',
+        content: result.content,
+        timestamp: new Date(),
+        dispatched: agentConfig.skills.map(s => ({ skillName: s.name, status: 'done' as const })),
+        model: result.model,
+        provider: result.provider,
+        tokensUsed: result.tokensUsed,
+      }]);
 
-    setIsProcessing(false);
+    } catch (error: any) {
+      // Error handling
+      setSkillStatuses(prev => prev.map(s => ({
+        ...s, status: 'error' as const
+      })));
 
-    // Reset skill statuses after a delay
-    setTimeout(() => {
-      setSkillStatuses(prev => prev.map(s => ({ ...s, status: 'idle' as const })));
-    }, 3000);
+      setMessages(prev => [...prev, {
+        id: `msg-${Date.now()}`,
+        role: 'assistant',
+        content: `**Error**: ${error.message || 'Failed to get response from LLM. Please check your API key configuration and try again.'}`,
+        timestamp: new Date(),
+      }]);
+
+      toast.error('Failed to get AI response');
+    } finally {
+      setIsProcessing(false);
+      // Reset statuses after delay
+      setTimeout(() => {
+        setSkillStatuses(prev => prev.map(s => ({ ...s, status: 'idle' as const })));
+      }, 3000);
+    }
   };
 
   const handleSend = () => {
@@ -171,13 +195,7 @@ export default function AgentRun() {
       timestamp: new Date(),
     }]);
     setInput('');
-    simulateDispatch(msg);
-  };
-
-  const handleCopy = (text: string) => {
-    navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    handleDispatch(msg);
   };
 
   if (!agentConfig) {
@@ -225,7 +243,6 @@ export default function AgentRun() {
       <div className="flex flex-1 overflow-hidden">
         {/* Left: Chat */}
         <div className="flex-1 flex flex-col min-w-0">
-          {/* Messages */}
           <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
             <AnimatePresence>
               {messages.map((msg) => (
@@ -266,9 +283,17 @@ export default function AgentRun() {
                         ))}
                       </div>
                     )}
-                    <p className="text-[10px] text-muted-foreground mt-1">
-                      {msg.timestamp.toLocaleTimeString()}
-                    </p>
+                    {/* Model info */}
+                    <div className="flex items-center gap-2 mt-1">
+                      <p className="text-[10px] text-muted-foreground">
+                        {msg.timestamp.toLocaleTimeString()}
+                      </p>
+                      {msg.model && msg.provider && (
+                        <span className="text-[10px] text-muted-foreground/60">
+                          via {msg.provider} ({msg.model}){msg.tokensUsed ? ` · ${msg.tokensUsed} tokens` : ''}
+                        </span>
+                      )}
+                    </div>
                   </div>
                   {msg.role === 'user' && (
                     <div className="w-8 h-8 rounded-lg bg-primary/10 shrink-0 flex items-center justify-center">
@@ -287,7 +312,7 @@ export default function AgentRun() {
                 <div className="bg-card border border-border rounded-xl px-4 py-3">
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>Dispatching to skill modules...</span>
+                    <span>Processing with AI models...</span>
                   </div>
                 </div>
               </motion.div>
@@ -344,7 +369,6 @@ export default function AgentRun() {
                 <motion.div
                   key={skill.id}
                   animate={{
-                    borderColor: skill.status === 'active' ? 'rgba(var(--primary), 0.4)' : undefined,
                     scale: skill.status === 'active' ? 1.02 : 1,
                   }}
                   className={`rounded-xl border p-3 transition-all ${
@@ -352,6 +376,8 @@ export default function AgentRun() {
                       ? 'border-primary/40 bg-primary/5 shadow-sm shadow-primary/10'
                       : skill.status === 'done'
                       ? 'border-teal/30 bg-teal/5'
+                      : skill.status === 'error'
+                      ? 'border-red-500/30 bg-red-500/5'
                       : 'border-border bg-card'
                   }`}
                 >
@@ -365,31 +391,20 @@ export default function AgentRun() {
                       <p className="text-xs font-semibold truncate">{skill.name}</p>
                       <p className="text-[10px] text-muted-foreground">{skill.author}</p>
                     </div>
-                    {/* Status indicator */}
                     <div className="shrink-0">
-                      {skill.status === 'active' && (
-                        <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                      )}
-                      {skill.status === 'done' && (
-                        <CheckCircle2 className="w-3.5 h-3.5 text-teal" />
-                      )}
-                      {skill.status === 'idle' && (
-                        <div className="w-2 h-2 rounded-full bg-muted-foreground/30" />
-                      )}
-                      {skill.status === 'error' && (
-                        <AlertCircle className="w-3.5 h-3.5 text-red-500" />
-                      )}
+                      {skill.status === 'active' && <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />}
+                      {skill.status === 'done' && <CheckCircle2 className="w-3.5 h-3.5 text-teal" />}
+                      {skill.status === 'idle' && <div className="w-2 h-2 rounded-full bg-muted-foreground/30" />}
+                      {skill.status === 'error' && <AlertCircle className="w-3.5 h-3.5 text-red-500" />}
                     </div>
                   </div>
 
-                  {/* Task info */}
                   {skill.lastTask && (
                     <p className="text-[10px] text-muted-foreground mt-2 truncate pl-11">
                       {skill.status === 'active' ? '⚡ Processing: ' : '✓ Last: '}{skill.lastTask}
                     </p>
                   )}
 
-                  {/* Stats */}
                   <div className="flex items-center gap-3 mt-2 pl-11">
                     <span className={`text-[10px] px-1.5 py-0.5 rounded-full border ${ROLE_COLORS[skill.type] || 'bg-muted text-muted-foreground border-border'}`}>
                       {skill.type}
@@ -418,6 +433,11 @@ export default function AgentRun() {
                         <p className="text-xs font-medium truncate">{model.name}</p>
                         <p className="text-[10px] text-muted-foreground">{model.provider}</p>
                       </div>
+                      {agentConfig.apiKeys?.[model.provider] ? (
+                        <CheckCircle2 className="w-3 h-3 text-teal shrink-0" />
+                      ) : (
+                        <span className="text-[9px] text-amber-500 shrink-0">Built-in</span>
+                      )}
                     </div>
                   ))}
                 </div>
