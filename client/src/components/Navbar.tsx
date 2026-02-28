@@ -4,6 +4,15 @@
  * Everything else in "More" dropdown (HuggingFace-style)
  */
 import { useState, useEffect, useRef } from 'react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+  DropdownMenuLabel,
+} from '@/components/ui/dropdown-menu';
+import { User, Settings, LogOut, Plus, Heart, Star } from 'lucide-react';
 import { Link, useLocation } from 'wouter';
 import {
   Search, Menu, X, ChevronDown,
@@ -11,7 +20,7 @@ import {
   MoreHorizontal, Cpu, Globe, Tag,
   Building2, MessageSquare, Newspaper,
   FileText, GraduationCap, MessagesSquare,
-  CreditCard, Briefcase, Github, Layers,
+  CreditCard, Briefcase, Layers,
   Bot
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -63,7 +72,7 @@ const moreDropdownSections: DropdownSection[] = [
       { label: 'Learn', href: '/learn', icon: <GraduationCap className="w-4 h-4" /> },
       { label: 'Discord', href: '#', icon: <MessagesSquare className="w-4 h-4" /> },
       { label: 'Forum', href: '/forum', icon: <MessageSquare className="w-4 h-4" /> },
-      { label: 'GitHub', href: GITHUB_REPO, icon: <Github className="w-4 h-4" /> },
+      { label: 'GitHub', href: GITHUB_REPO, icon: <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg> },
     ],
   },
   {
@@ -233,29 +242,64 @@ export default function Navbar() {
           </nav>
 
           {/* Right side: Theme + GitHub + Auth */}
-          <div className="hidden lg:flex items-center gap-2 ml-3">
+          <div className="hidden lg:flex items-center gap-1.5 ml-3">
             <ThemeSwitcher />
             <a
               href={GITHUB_REPO}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center w-8 h-8 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-all"
+              className="flex items-center justify-center w-8 h-8 rounded-full bg-foreground text-background hover:opacity-80 transition-all"
               title="GitHub Repository"
             >
-              <Github className="w-[18px] h-[18px]" />
+              <svg className="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+              </svg>
             </a>
             {isAuthenticated ? (
-              <div className="flex items-center gap-2">
-                <Link href="/profile" className="flex items-center gap-2 px-2.5 py-1.5 text-[13px] font-medium rounded-md text-foreground/60 hover:text-foreground hover:bg-muted/60 transition-all">
-                  <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xs font-bold">
-                    {user?.name?.[0]?.toUpperCase() || 'U'}
-                  </div>
-                  {user?.name || 'Profile'}
-                </Link>
-                <Button variant="ghost" size="sm" className="text-[13px] font-medium h-8 px-3" onClick={() => logout()}>
-                  Log Out
-                </Button>
-              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 hover:bg-primary/20 transition-all focus:outline-none focus:ring-2 focus:ring-primary/30">
+                    <span className="text-primary text-sm font-bold">
+                      {user?.name?.[0]?.toUpperCase() || 'U'}
+                    </span>
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none">{user?.name || 'User'}</p>
+                      <p className="text-xs leading-none text-muted-foreground">{user?.email || ''}</p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => navigate('/profile')}>
+                    <User className="mr-2 h-4 w-4" />
+                    Profile
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate('/skills/new')}>
+                    <Plus className="mr-2 h-4 w-4" />
+                    New Skill
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => toast.info('My favorites coming soon')}>
+                    <Heart className="mr-2 h-4 w-4" />
+                    My Favorites
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => toast.info('My stars coming soon')}>
+                    <Star className="mr-2 h-4 w-4" />
+                    My Stars
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => toast.info('Settings coming soon')}>
+                    <Settings className="mr-2 h-4 w-4" />
+                    Settings
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => logout()} className="text-destructive focus:text-destructive">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Log Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             ) : (
               <>
                 <a href={getLoginUrl()}>

@@ -1,77 +1,73 @@
-# SkillsHub 迁移 TODO
+# SkillsHub Migration TODO
 
-## Phase 1: 基础迁移（已完成）
-- [x] 迁移数据库 schema（11个核心表）
-- [x] 执行建表 SQL
-- [x] 迁移 server/db.ts（所有查询函数）
-- [x] 迁移 server/routers.ts（10个功能模块）
-- [x] 迁移 server/storage.ts
-- [x] 迁移 seed 脚本和数据文件
-- [x] 迁移 shared 类型和常量
-- [x] 迁移前端页面（20+页面）
-- [x] 迁移前端组件（30+组件）
-- [x] 迁移 hooks 和 contexts
-- [x] 迁移 lib 工具函数
-- [x] 迁移 CSS 样式和主题
-- [x] 迁移 vite.config.ts 配置
-- [x] 迁移 tsconfig 配置
-- [x] 安装额外依赖（ai-sdk, react-markdown, rehype, remark 等）
-- [x] 迁移 wouter patch
-- [x] 执行数据库种子数据填充
-- [x] 编写 vitest 测试
-- [x] 验证所有页面和功能正常
+- [x] Migrate package.json (extra dependencies: ai-sdk, react-markdown, rehype, remark, streamdown plugins, etc.)
+- [x] Migrate drizzle/schema.ts (all tables: skills, skillFiles, skillCommits, contexts, playgrounds, discussions, likes, organizations, agents, blogPosts, collections, userFavorites, agentSkills)
+- [x] Migrate drizzle/relations.ts
+- [x] Migrate drizzle migration SQL and journal
+- [x] Apply database migration SQL to new project database
+- [x] Migrate server/routers.ts (all tRPC procedures)
+- [x] Migrate server/db.ts (all query helpers)
+- [x] Migrate server/storage.ts
+- [x] Migrate server/_core/env.ts updates
+- [x] Migrate server/_core/chat.ts and patchedFetch.ts
+- [x] Register chat routes in server/_core/index.ts
+- [x] Migrate server seed data scripts
+- [x] Migrate server test files (skills.test.ts, favorites.test.ts)
+- [x] Migrate shared/const.ts and shared/types.ts
+- [x] Migrate client/index.html (fonts, analytics)
+- [x] Migrate client/src/index.css (global styles)
+- [x] Migrate client/src/App.tsx (all routes)
+- [x] Migrate client/src/main.tsx
+- [x] Migrate client/src/const.ts
+- [x] Migrate all pages (Home, Skills, SkillDetail, Contexts, Playgrounds, Deps, DepsCreate, DepsDetail, Models, Datasets, Tasks, Organizations, Collections, Languages, Blog, Community, ComingSoon, Profile, Pricing, Enterprise, Docs, NotFound)
+- [x] Migrate all UI components (shadcn/ui + custom: Footer, Layout, Logo, ManusDialog, Markdown, MarkdownRenderer, Navbar, ThemeSwitcher)
+- [x] Migrate all hooks (useComposition, useFileUpload, useMobile, usePersistFn)
+- [x] Migrate contexts (ThemeContext)
+- [x] Migrate lib files (data.ts, skillReadme.ts, trpc.ts, utils.ts)
+- [x] Migrate components.json (shadcn config)
+- [x] Migrate tsconfig.json and tsconfig.node.json
+- [x] Migrate vite.config.ts
+- [x] Migrate vitest.config.ts
+- [x] Migrate patches directory
+- [x] Migrate references directory
+- [x] Install all extra dependencies (ai-sdk, react-markdown, rehype, remark, streamdown plugins)
+- [x] Create all database tables (17 tables total)
+- [x] Run seed data script (50 categories, 510 skills)
+- [x] Verify build succeeds (dev server running, no TypeScript errors)
+- [x] Run tests (16/16 passed: auth, skills, favorites, categories, stats)
 
-# Phase 2: 大规模功能扩展
+# New Feature Requests
 
-## Step 1: 数据库扩展 → 提交到 GitHub
-- [x] 扩展分类系统为分级目录（父子分类、子类别）
-- [x] 创建 user_favorites 收藏表
-- [x] 创建 agents 表和 agent_skills 关联表
-- [x] 提交到 GitHub ✅
+## UI 优化
+- [ ] 主题切换改为单个图标+下拉选择模式（Light/Dark/Tech）→ 提交到 GitHub
+- [ ] 右上角 GitHub 图标改为实色背景 → 提交到 GitHub
+- [ ] 登录后右上角只显示用户头像，点击头像显示设置等操作的下拉框 → 提交到 GitHub
 
-## Step 2: 50个领域分级分类和500+ Skills → 提交到 GitHub
-- [x] 生成50个专业领域的分级分类目录（含子分类，673个分类）
-- [x] 为每个领域生成10个高质量专业Skills（510个技能）
-- [x] 创建 skills-repository 文件存储（4076个文件、3385个提交记录）
-- [x] 提交到 GitHub ✅
+## 数据库与数据
+- [ ] 创建 skill_reviews 评价表（评分+评论）→ 提交到 GitHub
+- [ ] 为所有技能填充真实 README 内容和文件数据（模仿 anthropics/skills 结构）→ 提交到 GitHub
 
-## Step 3: 技能详情页完善（接入真实数据） → 提交到 GitHub
-- [x] README 标签页（从数据库读取真实 README 文件内容）
-- [x] Files 标签页（从数据库读取真实文件树，模仿 GitHub 结构）
-- [x] Community 标签页（从数据库读取真实讨论数据）
-- [x] History 标签页（从数据库读取真实提交历史）
-- [x] Inference API 标签页（完善 API 调用示例）
-- [x] 提交到 GitHub ✅
+## 技能详情页完善
+- [ ] README tab 完善（渲染真实 Markdown 内容）→ 提交到 GitHub
+- [ ] Files tab 完善（展示技能描述文件目录结构）→ 提交到 GitHub
+- [ ] Community tab 完善（评论/讨论功能）→ 提交到 GitHub
+- [ ] History tab 完善（版本历史/提交记录）→ 提交到 GitHub
+- [ ] Inference API tab 完善 → 提交到 GitHub
 
-## Step 4: 用户收藏功能 → 提交到 GitHub
-- [x] 后端 API：收藏/取消收藏接口
-- [x] 前端：技能详情页收藏按钮
-- [x] 前端：个人主页已收藏列表页面
-- [x] 提交到 GitHub ✅
+## 用户评价系统
+- [ ] 用户对技能打分和评论功能 → 提交到 GitHub
+- [ ] 相关技能推荐（基于分类和标签）→ 提交到 GitHub
 
-## Step 5: 排序和分享功能 → 提交到 GitHub
-- [x] 技能列表排序（热度、最新、字母顺序）
-- [x] 技能详情页社交分享按钮（Twitter/X, LinkedIn, Facebook, 复制链接）
-- [x] 提交到 GitHub ✅
+## 搜索功能
+- [ ] 全文搜索引擎（支持 README 内容和标签搜索）→ 提交到 GitHub
+- [ ] 顶部搜索框模糊搜索（模仿 Hugging Face）→ 提交到 GitHub
 
-## Step 6: Deps/Agents 市场 → 提交到 GitHub
-- [x] Deps 标签页和 Agents 市场页面
-- [x] Agent 创建页面（选择 Skills + 大模型）
-- [x] 一键沙箱部署功能
-- [x] 提交到 GitHub ✅
+## 技能创建与发布
+- [ ] 在线技能创建编辑器（Markdown 实时预览）→ 提交到 GitHub
+- [ ] 技能发布到平台功能 → 提交到 GitHub
+- [ ] Skills 仓库评论功能 → 提交到 GitHub
+- [ ] Skills 收藏功能 → 提交到 GitHub
+- [ ] Skills Fork 功能 → 提交到 GitHub
 
-## Step 7: GitHub Skills 导入 → 提交到 GitHub
-- [x] 研究并导入 openai/skills（32个）
-- [x] 研究并导入 anthropics/skills（16个）
-- [x] 研究并导入 vercel-labs/skills（1个）
-- [x] 研究并导入 huggingface/skills（10个）
-- [x] 提交到 GitHub ✅
-
-## Step 8: 修复 GitHub Skills 导入并提交 → 提交到 GitHub
-- [x] 修复 import-github-skills.mjs 中的列名错误（type→mimeType, isDirectory）
-- [x] 成功运行导入脚本（53个 Skills 导入）
-- [x] 提交到 GitHub ✅
-
-## Step 9: 创建专业 README 文件 → 提交到 GitHub
-- [x] 编写专业开源风格 README.md（项目结构、部署方法、技术栈）
-- [ ] 提交到 GitHub ✅
+## 社交分享
+- [ ] 技能社交媒体分享功能 → 提交到 GitHub
