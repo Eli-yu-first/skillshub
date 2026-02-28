@@ -341,7 +341,7 @@ export default function Navbar() {
               title="GitHub Repository"
             >
               <img
-                src="https://d2xsxph8kpxj0f.cloudfront.net/310519663384881165/gf6zeY6KPGu2P4thu2bEhi/github_43f6890a.svg"
+                src="/github.svg"
                 alt="GitHub"
                 className="w-6 h-6 object-contain dark:invert"
               />
