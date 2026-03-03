@@ -7,6 +7,7 @@ import {
   organizations, agents, blogPosts, collections,
   skillFiles, skillCommits, userFavorites,
   skillReviews, skillForks,
+  usageLogs, userSubscriptions,
   type InsertSkill, type InsertContext, type InsertPlayground,
   type InsertCategory, type InsertAgent,
   type InsertSkillReview,
@@ -61,6 +62,52 @@ export async function getUserByOpenId(openId: string) {
   if (!db) return undefined;
   const result = await db.select().from(users).where(eq(users.openId, openId)).limit(1);
   return result.length > 0 ? result[0] : undefined;
+}
+
+// ============================================================================
+// BILLING & SUBSCRIPTIONS
+// ============================================================================
+export async function getUserBillingState(userId: number) {
+  const db = await getDb();
+  if (!db) return null;
+  
+  const [user] = await db.select({
+    tier: users.tier,
+    credits: users.credits,
+  }).from(users).where(eq(users.id, userId)).limit(1);
+
+  const [sub] = await db.select().from(userSubscriptions)
+    .where(eq(userSubscriptions.userId, userId))
+    .orderBy(desc(userSubscriptions.createdAt))
+    .limit(1);
+
+  return { user, subscription: sub || null };
+}
+
+export async function logTokenUsageAndDeduct(userId: number, tokens: number, model: string, skillId?: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  // Arbitrary cost calculation: 1000 tokens = 1 credit (Adjust dynamically for pricing)
+  const cost = Math.max(1, Math.ceil(tokens / 1000));
+
+  await db.transaction(async (tx) => {
+    // 1. Deduct credits
+    await tx.update(users)
+      .set({ credits: sql`${users.credits} - ${cost}` })
+      .where(eq(users.id, userId));
+
+    // 2. Log usage
+    await tx.insert(usageLogs).values({
+      userId,
+      skillId: skillId || null,
+      model,
+      tokensUsed: tokens,
+      cost,
+    });
+  });
+  
+  return cost;
 }
 
 // ============================================================================

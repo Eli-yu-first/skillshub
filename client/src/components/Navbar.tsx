@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuLabel,
 } from '@/components/ui/dropdown-menu';
-import { User, Settings, LogOut, Plus, Heart, Star } from 'lucide-react';
+import { User, Settings, LogOut, Plus, Heart, Star, Coins } from 'lucide-react';
 import { Link, useLocation } from 'wouter';
 import {
   Search, Menu, X, ChevronDown,
@@ -147,6 +147,10 @@ export default function Navbar() {
   }, []);
 
   const { user, isAuthenticated, logout } = useAuth();
+
+  const { data: billing } = trpc.billing.info.useQuery(undefined, {
+    enabled: isAuthenticated
+  });
 
   return (
     <>
@@ -337,7 +341,7 @@ export default function Navbar() {
               href={GITHUB_REPO}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center w-8 h-8 rounded-full hover:opacity-80 transition-all"
+              className="flex items-center justify-center w-8 h-8 rounded-full hover:opacity-80 transition-all mr-2"
               title="GitHub Repository"
             >
               <img
@@ -347,14 +351,22 @@ export default function Navbar() {
               />
             </a>
             {isAuthenticated ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 hover:bg-primary/20 transition-all focus:outline-none focus:ring-2 focus:ring-primary/30">
-                    <span className="text-primary text-sm font-bold">
-                      {user?.name?.[0]?.toUpperCase() || 'U'}
-                    </span>
-                  </button>
-                </DropdownMenuTrigger>
+              <div className="flex items-center gap-3">
+                {billing && (
+                  <Link href="/pricing" className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 bg-primary/10 hover:bg-primary/20 text-primary rounded-full transition-colors cursor-pointer border border-primary/20">
+                    <Coins className="w-3.5 h-3.5" />
+                    <span className="text-xs font-bold font-mono">{formatNumber(billing.user.credits)}</span>
+                  </Link>
+                )}
+                
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 hover:bg-primary/20 transition-all focus:outline-none focus:ring-2 focus:ring-primary/30">
+                      <span className="text-primary text-sm font-bold">
+                        {user?.name?.[0]?.toUpperCase() || 'U'}
+                      </span>
+                    </button>
+                  </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
                   <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
@@ -391,6 +403,7 @@ export default function Navbar() {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
+              </div>
             ) : (
               <>
                 <a href={getLoginUrl()}>

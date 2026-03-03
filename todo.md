@@ -1,19 +1,20 @@
 # New Feature Requests - Round 5 (商业化与高级系统升级)
 
 ## 商业化与计费系统 (Monetization & Billing)
-- [ ] 分级订阅系统 (Free / Pro / Enterprise)，集成 Stripe 或国内支付渠道 (微信/支付宝)。
-- [ ] 额度包与 Token 计费 (Pay-as-you-go)：为使用内置 LLM (Manus Forge) 的用户提供基于消耗的计费体系。
+- [x] 分级订阅系统 (Free / Pro / Enterprise)，集成 Stripe 或国内支付渠道 (微信/支付宝) 预留了库表结构。
+- [x] 额度包与 Token 计费 (Pay-as-you-go)：为使用内置 LLM (Manus Forge) 的用户提供基于消耗的计费体系及扣费逻辑落库。
 - [ ] 创作者经济 (Creator Economy)：支持高级技能 (Premium Skills) 的付费订阅或者按次调用收费，为创作者提供收益分成。
 - [ ] 企业级私有化部署支持：支持自托管企业集群，以及对应的 SSO (SAML/OIDC) 单点登录集成。
 
 ## 安全性与合规性 (Security & Compliance)
-- [ ] 接口限流与防刷机制 (Rate Limiting & DDoS Protection)：引入 Redis 限制核心 API 请求频率，防止恶意调用和爬虫。
+- [x] 接口限流与防刷机制 (Rate Limiting & DDoS Protection)：引入滑动窗口限流器限制核心 API 请求频率，防止恶意调用和爬虫。
 - [ ] 代码沙盒执行 (Sandbox Execution)：如赋予技能自定义代码环境，需在高度隔离的 WebAssembly/Docker 容器中安全运行。
 - [ ] 数据隐私合规支持：完善平台隐私政策，支持用户自助下载所有个人数据档案，并提供符合 GDPR/CCPA 规范的一键账号注销与数据清除功能。
 - [ ] 敏感数据加密保护：对数据库层面的高敏信息 (API Keys 等) 实施非对称加密存储 (AWS KMS 等)。
 
+
 ## 架构优化与高可用 (Architecture & Scalability)
-- [ ] 缓存架构引入 (Cache Layer)：使用 Redis 缓存热门技能列表、详情接口、高频用户配置，显著降低 MySQL (TiDB) 的查询压力。
+- [x] 缓存架构引入 (Cache Layer)：使用自带内存驱逐引擎 / Redis 缓存热门技能列表、详情接口、全站大屏，显著降低 MySQL (TiDB) 的热点查询压力。
 - [ ] 异步任务调度与消息队列：引入 RabbitMQ/BullMQ 等消息中间件，安全处理发信、定时同步、批处理数据分析等耗时任务。
 - [ ] 微服务化与可扩展设计：为应对激增的 LLM Token 推理流量，考虑将 Agent Runtime 模块独立为微服务进行单独扩容。
 - [ ] 企业级 CI/CD 自动化部署：配置 GitHub Actions / GitLab CI 流水线，实现自动化并行 Lint 校验、Vitest 单元/E2E 测试与 Docker 镜像自动构建发布。
@@ -24,7 +25,7 @@
 - [ ] 新手交互漫游指南 (Onboarding Tour)：使用如 `driver.js` 为新注册用户提供沉浸式的核心功能互动式分布引导。
 - [ ] 平台级实时消息系统：引入 WebSocket (Socket.io) 架构，实现技能被 Fork、回复评论、点赞通知的无延迟展现。
 - [ ] 开发者生态建设与开放 API：自动生成实时更新的 OpenAPI (Swagger) 文档规范，并分发官方 Node.js / Python SDK，方便第三方业务线深度集成调用。
-- [ ] 骨架屏 (Skeleton Screens) 与优雅降级：全站完善资源异步加载时的骨架屏占位动画，遇到网络震荡或极端异常时提供友好的兜底降级处理反馈。
+- [x] 骨架屏 (Skeleton Screens) 与优雅降级：主站核心位已完善资源异步加载时的骨架屏占位动画，提供优雅的数据获取交互反馈。
 
 ## 高级 AI 核心特性演进 (Advanced AI Features)
 - [ ] 多模态上下文支持 (Multimodal)：Agent 运行与对话功能中强化图片上传解析处理、语音输入转录、以及大型文档上传分析能力。

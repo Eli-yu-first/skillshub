@@ -15,9 +15,10 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/_core/hooks/useAuth';
 import { LOGO_URL } from '@/components/Logo';
+import { trpc } from '@/lib/trpc';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
-  trendingSkills, trendingPlaygrounds, trendingContexts,
-  organizations, openSourceProjects, formatNumber, getTypeIcon, getTypeColor
+  trendingContexts, organizations, openSourceProjects, formatNumber, getTypeIcon, getTypeColor
 } from '@/lib/data';
 
 const HERO_BG = 'https://d2xsxph8kpxj0f.cloudfront.net/310519663384874443/VRQPmB2sPmnMVF5FBa57oy/hero-bg-TZT4UsZ7HGvzNgiCN796ku.webp';
@@ -36,14 +37,17 @@ const staggerContainer = {
   visible: { transition: { staggerChildren: 0.08 } },
 };
 
-const stats = [
-  { value: '50K+', label: 'Skills', icon: <Code2 className="w-4 h-4" /> },
-  { value: '100K+', label: 'Contexts', icon: <BookOpen className="w-4 h-4" /> },
-  { value: '10K+', label: 'Playgrounds', icon: <Layers className="w-4 h-4" /> },
-  { value: '250K+', label: 'Developers', icon: <Users className="w-4 h-4" /> },
-];
-
 export default function Home() {
+  const { data: platformStats, isLoading: isLoadingStats } = trpc.stats.platform.useQuery();
+  const { data: trendingSkillsData, isLoading: isLoadingSkills } = trpc.skills.trending.useQuery({ limit: 5 });
+  const { data: trendingPlaygroundsData, isLoading: isLoadingPlaygrounds } = trpc.playgrounds.list.useQuery({ limit: 5 });
+
+  const stats = [
+    { value: platformStats ? `${formatNumber(platformStats.skills)}+` : '...', label: 'Skills', icon: <Code2 className="w-4 h-4" /> },
+    { value: platformStats ? `${formatNumber(platformStats.users)}+` : '...', label: 'Developers', icon: <Users className="w-4 h-4" /> },
+    { value: '100K+', label: 'Contexts', icon: <BookOpen className="w-4 h-4" /> },
+    { value: platformStats ? `${formatNumber(platformStats.playgrounds)}+` : '...', label: 'Playgrounds', icon: <Layers className="w-4 h-4" /> },
+  ];
 
   return (
     <Layout>
@@ -139,27 +143,39 @@ export default function Home() {
                 <h3 className="font-display font-semibold text-base">Skills</h3>
               </div>
               <div className="space-y-1">
-                {trendingSkills.map((skill) => (
-                  <Link key={skill.id} href={`/skills/${skill.author}/${skill.name}`}>
-                    <div className="group flex items-start gap-3 p-3 rounded-lg hover:bg-muted/60 transition-all hover:translate-x-0.5">
-                      <span className={`mt-1 text-xs ${getTypeColor(skill.type)}`}>{getTypeIcon(skill.type)}</span>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium truncate group-hover:text-coral transition-colors">
-                          {skill.author}/{skill.name}
-                        </p>
-                        <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
-                          <span>Updated {skill.updatedAt}</span>
-                          <span className="flex items-center gap-1">
-                            <Download className="w-3 h-3" /> {formatNumber(skill.downloads)}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Heart className="w-3 h-3" /> {formatNumber(skill.likes)}
-                          </span>
-                        </div>
+                {isLoadingSkills ? (
+                  Array.from({ length: 5 }).map((_, i) => (
+                    <div key={i} className="flex gap-3 p-3">
+                      <Skeleton className="w-6 h-6 rounded-full shrink-0" />
+                      <div className="flex-1 space-y-2">
+                        <Skeleton className="h-4 w-3/4" />
+                        <Skeleton className="h-3 w-1/2" />
                       </div>
                     </div>
-                  </Link>
-                ))}
+                  ))
+                ) : (
+                  trendingSkillsData?.map((skill: any) => (
+                    <Link key={skill.id} href={`/skills/${skill.author}/${skill.slug || skill.name}`}>
+                      <div className="group flex items-start gap-3 p-3 rounded-lg hover:bg-muted/60 transition-all hover:translate-x-0.5">
+                        <span className={`mt-1 text-xs ${getTypeColor(skill.type)}`}>{getTypeIcon(skill.type)}</span>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium truncate group-hover:text-coral transition-colors">
+                            {skill.author}/{skill.name}
+                          </p>
+                          <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
+                            <span>v{skill.version || '1.0.0'}</span>
+                            <span className="flex items-center gap-1">
+                              <Download className="w-3 h-3" /> {formatNumber(skill.downloads || 0)}
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <Heart className="w-3 h-3" /> {formatNumber(skill.likes || 0)}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                  ))
+                )}
               </div>
               <Link href="/skills" className="flex items-center gap-1 mt-3 px-3 text-sm font-medium text-coral hover:text-coral-dark transition-colors group">
                 Browse 50K+ skills <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
@@ -173,24 +189,33 @@ export default function Home() {
                 <h3 className="font-display font-semibold text-base">Playgrounds</h3>
               </div>
               <div className="space-y-2">
-                {trendingPlaygrounds.map((pg) => (
-                  <Link key={pg.id} href={`/playgrounds/${pg.author}/${pg.name}`}>
-                    <div className="group relative overflow-hidden rounded-lg bg-gradient-to-r from-indigo to-indigo-light p-3.5 hover:shadow-lg hover:shadow-indigo/20 transition-all hover:-translate-y-0.5">
-                      <div className="absolute top-0 right-0 w-16 h-16 bg-teal/5 rounded-full -translate-y-1/2 translate-x-1/2" />
-                      <div className="flex items-start justify-between relative z-10">
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-white truncate">
-                            {pg.name} {pg.emoji}
-                          </p>
-                          <p className="text-xs text-white/55 mt-1 truncate">{pg.description}</p>
-                        </div>
-                        <span className="flex items-center gap-1 text-xs text-white/60 shrink-0 ml-2">
-                          <Heart className="w-3 h-3" /> {formatNumber(pg.likes)}
-                        </span>
-                      </div>
+                {isLoadingPlaygrounds ? (
+                  Array.from({ length: 4 }).map((_, i) => (
+                    <div key={i} className="p-3.5 rounded-lg bg-indigo/5 border border-indigo/10 space-y-2">
+                      <Skeleton className="h-4 w-2/3" />
+                      <Skeleton className="h-3 w-full" />
                     </div>
-                  </Link>
-                ))}
+                  ))
+                ) : (
+                  trendingPlaygroundsData?.items?.slice(0, 5).map((pg: any) => (
+                    <Link key={pg.id} href={`/playgrounds/${pg.author}/${pg.name}`}>
+                      <div className="group relative overflow-hidden rounded-lg bg-gradient-to-r from-indigo to-indigo-light p-3.5 hover:shadow-lg hover:shadow-indigo/20 transition-all hover:-translate-y-0.5">
+                        <div className="absolute top-0 right-0 w-16 h-16 bg-teal/5 rounded-full -translate-y-1/2 translate-x-1/2" />
+                        <div className="flex items-start justify-between relative z-10">
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-white truncate">
+                              {pg.name} 🧠
+                            </p>
+                            <p className="text-xs text-white/55 mt-1 truncate">{pg.description || 'AI Sandbox Environment'}</p>
+                          </div>
+                          <span className="flex items-center gap-1 text-xs text-white/60 shrink-0 ml-2">
+                            <Heart className="w-3 h-3" /> {formatNumber(pg.likes || 0)}
+                          </span>
+                        </div>
+                      </div>
+                    </Link>
+                  ))
+                )}
               </div>
               <Link href="/playgrounds" className="flex items-center gap-1 mt-3 px-3 text-sm font-medium text-teal hover:text-teal/80 transition-colors group">
                 Browse 10K+ playgrounds <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />

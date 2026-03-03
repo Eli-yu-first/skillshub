@@ -21,8 +21,12 @@ import {
   createSkill, updateSkill, createSkillFile, updateSkillFiles,
   getUserSkills, getUserAgents,
   createSkillCommit, getSkillCommitByHash, rollbackSkillToCommit,
+  getUserBillingState, logTokenUsageAndDeduct
 } from "./db";
 import { invokeLLM } from "./_core/llm";
+import { checkRateLimit } from "./_core/rateLimit";
+import { cache } from "./_core/cache";
+import { TRPCError } from "@trpc/server";
 
 export const appRouter = router({
   system: systemRouter,
@@ -60,10 +64,24 @@ export const appRouter = router({
       .query(({ input }) => getSkillBySlug(input.author, input.slug)),
     trending: publicProcedure
       .input(z.object({ limit: z.number().optional() }).optional())
-      .query(({ input }) => getTrendingSkills(input?.limit)),
+      .query(async ({ input }) => {
+        const cacheKey = `skills:trending:${input?.limit || 10}`;
+        const cached = await cache.get<any>(cacheKey);
+        if (cached) return cached;
+        const result = await getTrendingSkills(input?.limit);
+        await cache.set(cacheKey, result, 300); // 5 minutes cache
+        return result;
+      }),
     featured: publicProcedure
       .input(z.object({ limit: z.number().optional() }).optional())
-      .query(({ input }) => getFeaturedSkills(input?.limit)),
+      .query(async ({ input }) => {
+        const cacheKey = `skills:featured:${input?.limit || 10}`;
+        const cached = await cache.get<any>(cacheKey);
+        if (cached) return cached;
+        const result = await getFeaturedSkills(input?.limit);
+        await cache.set(cacheKey, result, 300);
+        return result;
+      }),
     files: publicProcedure
       .input(z.object({ skillId: z.number() }))
       .query(({ input }) => getSkillFiles(input.skillId)),
@@ -289,12 +307,28 @@ export const appRouter = router({
 
   // Platform stats
   stats: router({
-    platform: publicProcedure.query(() => getPlatformStats()),
+    platform: publicProcedure.query(async () => {
+      const cacheKey = 'stats:platform:global';
+      const cached = await cache.get<any>(cacheKey);
+      if (cached) return cached;
+      const result = await getPlatformStats();
+      await cache.set(cacheKey, result, 600); // 10 minutes cache for global stats
+      return result;
+    }),
   }),
 
-  // Agent Chat - Real LLM integration
+  // Billing endpoint
+  billing: router({
+    info: protectedProcedure.query(async ({ ctx }) => {
+      const state = await getUserBillingState(ctx.user.id);
+      if (!state) throw new TRPCError({ code: "NOT_FOUND", message: "User account not found" });
+      return state;
+    })
+  }),
+
+  // Agent Chat - Real LLM integration (Guarded with Rate Limit & Billing)
   agentChat: router({
-    send: publicProcedure
+    send: protectedProcedure
       .input(z.object({
         messages: z.array(z.object({
           role: z.enum(['user', 'assistant', 'system']),
@@ -309,9 +343,26 @@ export const appRouter = router({
         })).optional(),
         modelProvider: z.string().optional(),
         apiKey: z.string().optional(),
+        skillId: z.number().optional(), // For billing attribution
       }))
-      .mutation(async ({ input }) => {
-        const { messages, systemPrompt, temperature, maxTokens, skills, modelProvider, apiKey } = input;
+      .mutation(async ({ ctx, input }) => {
+        const ip = ctx.req.headers['x-forwarded-for'] as string || ctx.req.ip || '127.0.0.1';
+        await checkRateLimit(ip, {
+          windowMs: 60 * 1000,
+          maxRequests: 20, // 20 standard requests per minute to prevent DB/system flooding
+          keyPrefix: 'chat-limit'
+        });
+
+        // 1) Verify user has enough base credits to initiate request (if using platform API)
+        const billingState = await getUserBillingState(ctx.user.id);
+        if (!billingState || billingState.user.credits <= 0) {
+          throw new TRPCError({
+            code: 'FORBIDDEN',
+            message: 'Insufficient credits. Please upgrade your plan or top up to process further requests.',
+          });
+        }
+
+        const { messages, systemPrompt, temperature, maxTokens, skills, modelProvider, apiKey, skillId } = input;
 
         // Build system prompt with skill context
         const skillContext = skills && skills.length > 0
@@ -400,11 +451,18 @@ export const appRouter = router({
             }
 
             const data = await response.json() as any;
+            const totalTokens = data.usage?.total_tokens || 0;
+            
+            // Deduct usage (Only if not using user's own token keys typically, but logged for stats here anyway)
+            if (!apiKey) {
+              await logTokenUsageAndDeduct(ctx.user.id, Math.max(1, totalTokens), model, skillId);
+            }
+
             return {
               content: data.choices?.[0]?.message?.content || 'No response generated.',
               model,
               provider: modelProvider,
-              tokensUsed: data.usage?.total_tokens || 0,
+              tokensUsed: totalTokens,
             };
           } catch (error: any) {
             // Fallback to built-in LLM if external API fails
@@ -425,12 +483,16 @@ export const appRouter = router({
 
           const result = await invokeLLM({ messages: llmMessages });
           const content = result.choices?.[0]?.message?.content || 'No response generated.';
+          const totalTokens = result.usage?.total_tokens || 0;
+
+          // Deduct from platform credits
+          await logTokenUsageAndDeduct(ctx.user.id, Math.max(1, totalTokens), 'gemini-2.5-flash', skillId);
 
           return {
             content,
             model: 'gemini-2.5-flash',
             provider: 'SkillsHub Built-in',
-            tokensUsed: result.usage?.total_tokens || 0,
+            tokensUsed: totalTokens,
           };
         } catch (error: any) {
           return {

@@ -10,6 +10,8 @@ export const users = mysqlTable("users", {
   email: varchar("email", { length: 320 }),
   loginMethod: varchar("loginMethod", { length: 64 }),
   role: mysqlEnum("role", ["user", "admin"]).default("user").notNull(),
+  tier: mysqlEnum("tier", ["free", "pro", "enterprise"]).default("free").notNull(),
+  credits: int("credits").default(100).notNull(), // Initial quota
   avatar: text("avatar"),
   bio: text("bio"),
   website: varchar("website", { length: 512 }),
@@ -21,6 +23,34 @@ export const users = mysqlTable("users", {
 
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
+
+// ============================================================================
+// SUBSCRIPTIONS & BILLING
+// ============================================================================
+export const userSubscriptions = mysqlTable("user_subscriptions", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  stripeCustomerId: varchar("stripeCustomerId", { length: 128 }),
+  stripeSubscriptionId: varchar("stripeSubscriptionId", { length: 128 }),
+  status: varchar("status", { length: 64 }).notNull(),
+  currentPeriodEnd: timestamp("currentPeriodEnd"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type UserSubscription = typeof userSubscriptions.$inferSelect;
+
+export const usageLogs = mysqlTable("usage_logs", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  skillId: int("skillId"), // Option if executed through specific skill
+  model: varchar("model", { length: 128 }).notNull(),
+  tokensUsed: int("tokensUsed").notNull(),
+  cost: int("cost").default(0).notNull(), // Measured in credits
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type UsageLog = typeof usageLogs.$inferSelect;
 
 // ============================================================================
 // CATEGORIES (50 skill domains) - hierarchical
