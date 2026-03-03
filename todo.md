@@ -1,142 +1,54 @@
-# SkillsHub Migration TODO
+# New Feature Requests - Round 5 (商业化与高级系统升级)
 
-- [x] Migrate package.json (extra dependencies: ai-sdk, react-markdown, rehype, remark, streamdown plugins, etc.)
-- [x] Migrate drizzle/schema.ts (all tables: skills, skillFiles, skillCommits, contexts, playgrounds, discussions, likes, organizations, agents, blogPosts, collections, userFavorites, agentSkills)
-- [x] Migrate drizzle/relations.ts
-- [x] Migrate drizzle migration SQL and journal
-- [x] Apply database migration SQL to new project database
-- [x] Migrate server/routers.ts (all tRPC procedures)
-- [x] Migrate server/db.ts (all query helpers)
-- [x] Migrate server/storage.ts
-- [x] Migrate server/_core/env.ts updates
-- [x] Migrate server/_core/chat.ts and patchedFetch.ts
-- [x] Register chat routes in server/_core/index.ts
-- [x] Migrate server seed data scripts
-- [x] Migrate server test files (skills.test.ts, favorites.test.ts)
-- [x] Migrate shared/const.ts and shared/types.ts
-- [x] Migrate client/index.html (fonts, analytics)
-- [x] Migrate client/src/index.css (global styles)
-- [x] Migrate client/src/App.tsx (all routes)
-- [x] Migrate client/src/main.tsx
-- [x] Migrate client/src/const.ts
-- [x] Migrate all pages (Home, Skills, SkillDetail, Contexts, Playgrounds, Deps, DepsCreate, DepsDetail, Models, Datasets, Tasks, Organizations, Collections, Languages, Blog, Community, ComingSoon, Profile, Pricing, Enterprise, Docs, NotFound)
-- [x] Migrate all UI components (shadcn/ui + custom: Footer, Layout, Logo, ManusDialog, Markdown, MarkdownRenderer, Navbar, ThemeSwitcher)
-- [x] Migrate all hooks (useComposition, useFileUpload, useMobile, usePersistFn)
-- [x] Migrate contexts (ThemeContext)
-- [x] Migrate lib files (data.ts, skillReadme.ts, trpc.ts, utils.ts)
-- [x] Migrate components.json (shadcn config)
-- [x] Migrate tsconfig.json and tsconfig.node.json
-- [x] Migrate vite.config.ts
-- [x] Migrate vitest.config.ts
-- [x] Migrate patches directory
-- [x] Migrate references directory
-- [x] Install all extra dependencies (ai-sdk, react-markdown, rehype, remark, streamdown plugins)
-- [x] Create all database tables (17 tables total)
-- [x] Run seed data script (50 categories, 510 skills)
-- [x] Verify build succeeds (dev server running, no TypeScript errors)
-- [x] Run tests (16/16 passed: auth, skills, favorites, categories, stats)
+## 商业化与计费系统 (Monetization & Billing)
+- [ ] 分级订阅系统 (Free / Pro / Enterprise)，集成 Stripe 或国内支付渠道 (微信/支付宝)。
+- [ ] 额度包与 Token 计费 (Pay-as-you-go)：为使用内置 LLM (Manus Forge) 的用户提供基于消耗的计费体系。
+- [ ] 创作者经济 (Creator Economy)：支持高级技能 (Premium Skills) 的付费订阅或者按次调用收费，为创作者提供收益分成。
+- [ ] 企业级私有化部署支持：支持自托管企业集群，以及对应的 SSO (SAML/OIDC) 单点登录集成。
 
-# New Feature Requests
+## 安全性与合规性 (Security & Compliance)
+- [ ] 接口限流与防刷机制 (Rate Limiting & DDoS Protection)：引入 Redis 限制核心 API 请求频率，防止恶意调用和爬虫。
+- [ ] 代码沙盒执行 (Sandbox Execution)：如赋予技能自定义代码环境，需在高度隔离的 WebAssembly/Docker 容器中安全运行。
+- [ ] 数据隐私合规支持：完善平台隐私政策，支持用户自助下载所有个人数据档案，并提供符合 GDPR/CCPA 规范的一键账号注销与数据清除功能。
+- [ ] 敏感数据加密保护：对数据库层面的高敏信息 (API Keys 等) 实施非对称加密存储 (AWS KMS 等)。
 
-## UI 优化
-- [x] 主题切换改为单个图标+下拉选择模式（Light/Dark/Tech）→ 提交到 GitHub
-- [x] 右上角 GitHub 图标改为实色背景 → 提交到 GitHub
-- [x] 登录后右上角只显示用户头像，点击头像显示设置等操作的下拉框 → 提交到 GitHub
+## 架构优化与高可用 (Architecture & Scalability)
+- [ ] 缓存架构引入 (Cache Layer)：使用 Redis 缓存热门技能列表、详情接口、高频用户配置，显著降低 MySQL (TiDB) 的查询压力。
+- [ ] 异步任务调度与消息队列：引入 RabbitMQ/BullMQ 等消息中间件，安全处理发信、定时同步、批处理数据分析等耗时任务。
+- [ ] 微服务化与可扩展设计：为应对激增的 LLM Token 推理流量，考虑将 Agent Runtime 模块独立为微服务进行单独扩容。
+- [ ] 企业级 CI/CD 自动化部署：配置 GitHub Actions / GitLab CI 流水线，实现自动化并行 Lint 校验、Vitest 单元/E2E 测试与 Docker 镜像自动构建发布。
+- [ ] 基础设施即代码 (IaC)：提供完整的 Terraform 或 Kubernetes Helm Charts，支持一键在公有云 (AWS/阿里云) 搭建高可用集群环境。
 
-## 数据库与数据
-- [x] 创建 skill_reviews 评价表（评分+评论）→ 提交到 GitHub
-- [x] 为所有技能填充真实 README 内容和文件数据（模仿 anthropics/skills 结构）→ 提交到 GitHub
+## 用户体验与平台专业性 (UX & Professionalism)
+- [ ] 全局国际化多语言支持 (i18n)：初步提供英文 (en-US) 和中文 (zh-CN) 切换体系，深度满足全球化商业运作与海外用户诉求。
+- [ ] 新手交互漫游指南 (Onboarding Tour)：使用如 `driver.js` 为新注册用户提供沉浸式的核心功能互动式分布引导。
+- [ ] 平台级实时消息系统：引入 WebSocket (Socket.io) 架构，实现技能被 Fork、回复评论、点赞通知的无延迟展现。
+- [ ] 开发者生态建设与开放 API：自动生成实时更新的 OpenAPI (Swagger) 文档规范，并分发官方 Node.js / Python SDK，方便第三方业务线深度集成调用。
+- [ ] 骨架屏 (Skeleton Screens) 与优雅降级：全站完善资源异步加载时的骨架屏占位动画，遇到网络震荡或极端异常时提供友好的兜底降级处理反馈。
 
-## 技能详情页完善
-- [x] README tab 完善（渲染真实 Markdown 内容）→ 提交到 GitHub
-- [x] Files tab 完善（展示技能描述文件目录结构）→ 提交到 GitHub
-- [x] Community tab 完善（评论/讨论功能）→ 提交到 GitHub
-- [x] History tab 完善（版本历史/提交记录）→ 提交到 GitHub
-- [x] Inference API tab 完善 → 提交到 GitHub
+## 高级 AI 核心特性演进 (Advanced AI Features)
+- [ ] 多模态上下文支持 (Multimodal)：Agent 运行与对话功能中强化图片上传解析处理、语音输入转录、以及大型文档上传分析能力。
+- [ ] 升级版 RAG 与向量数据库原生集成：内置 Qdrant 或 Milvus，针对用户上传的超大型 Contexts 数据集进行高效向量检索关联。
+- [ ] Prompt 提示工程测试控制台 (A/B Testing Playground)：为专业的技能创作者提供支持历史对话重访测试、并列评估双模 Prompt 效果的极客面板。
+- [ ] 智能数据大屏与可观测性分析：集成 Sentry 跟踪细粒度报错，并利用 Datadog/Prometheus 配合 Grafana 输出实时的模型响应延迟、使用走势图与系统健康度指标报告。
 
-## 用户评价系统
-- [x] 用户对技能打分和评论功能 → 提交到 GitHub
-- [x] 相关技能推荐（基于分类和标签）→ 提交到 GitHub
+# New Feature Requests - Round 6 (Skills 系统全链路优化与外部生态接入)
 
-## 搜索功能
-- [x] 全文搜索引擎（支持 README 内容和标签搜索）→ 提交到 GitHub
-- [x] 顶部搜索框模糊搜索（模仿 Hugging Face）→ 提交到 GitHub
+## Skills 生命周期闭环与管理优化 (Skills Closed-loop Management)
+- [x] 优化 Skills 的创建、存储、更新与管理流程，彻底打通“开发 -> 审核 -> 上架 -> 调用”的业务全链路，确保所有功能的可用性与商业闭环。
 
-## 技能创建与发布
-- [x] 在线技能创建编辑器（Markdown 实时预览）→ 提交到 GitHub
-- [x] 技能发布到平台功能 → 提交到 GitHub
-- [x] Skills 仓库评论功能 → 提交到 GitHub
-- [x] Skills 收藏功能 → 提交到 GitHub
-- [x] Skills Fork 功能 → 提交到 GitHub
+## 技能详情页深度完善 (Skills Detail Page Enhancements)
+- [x] 完善 `README` Tab：支持复杂 Markdown 和各类多媒体格式。
+- [x] 完善 `Files` Tab：精确模仿 `https://github.com/anthropics/skills/tree/main/skills` 的结构目录标准来组织和展示所有技能的描述文件体系。
+- [x] 完善 `Community` Tab：搭建优质的问答与开发者讨论专区。
+- [x] 完善 `History` Tab：清晰的 Git-like 版本历史与变更溯源。
+- [x] 完善 `Inference API` Tab：提供标准化的快速调用代码片段展示页（如 cURL, Python 示例等）。
 
-## 社交分享
-- [x] 技能社交媒体分享功能 → 提交到 GitHub
-
-## Agent 创建与运行
-- [x] Agent 创建页面重构：去掉先选 Skills/Models 步骤，在 Agent Summary 中直接添加 Skills/Models 下拉选择 → 提交到 GitHub
-- [x] Agent Summary 中 Skills 下拉框：支持多选、搜索、点击"All Skills"跳转 Skills 页面 → 提交到 GitHub
-- [x] Agent Summary 中 Models 下拉框：支持多选、搜索、点击"Models"跳转 Models 页面 → 提交到 GitHub
-- [x] Agent 发布后运行页面：左侧对话框 + 右侧已选 Skills 角色面板 → 提交到 GitHub
-- [x] Agent 运行页面：AI 任务调度系统，指令智能分派给对应技能模块 → 提交到 GitHub
-- [x] Agent 后端 API：创建/保存/运行/对话接口 → 提交到 GitHub
-
-## 模型 API Key 配置
-- [x] Agent 创建页面：选择模型后显示 API Key 配置区域 → 提交到 GitHub
-- [x] 每个模型提供商显示对应的 API Key 输入框（如 OpenAI API Key、Anthropic API Key 等）→ 提交到 GitHub
-- [x] API Key 输入支持密码遮罩和显示切换 → 提交到 GitHub
-- [x] API Key 存储到 Agent 配置中传递给运行页面 → 提交到 GitHub
-
-# New Feature Requests - Round 3
-
-## Skills 专业化内容
-- [x] 创建 skills-repository 文件夹存储所有 Skills 的 Markdown 文件 → 提交到 GitHub
-- [x] 为所有 Skills 编写专业、详细、符合行业规范的 README 内容 → 提交到 GitHub
-- [x] 将 Skills 内容提交到数据库 skill_files 表中 → 提交到 GitHub
-- [x] Skills 详情页展示完整专业内容 → 提交到 GitHub
-
-## Agent 真实 LLM 接入
-- [x] Agent 运行页面接入真实大语言模型 API → 提交到 GitHub
-- [x] 利用用户配置的 API Key 实现 AI 对话 → 提交到 GitHub
-- [x] 实现任务调度：根据技能角色分派指令 → 提交到 GitHub
-
-## 用户个人主页
-- [x] 创建用户个人主页页面 → 提交到 GitHub
-- [x] 展示用户创建的技能列表 → 提交到 GitHub
-- [x] 展示用户收藏的技能列表 → 提交到 GitHub
-- [x] 展示用户创建的 Agent 列表 → 提交到 GitHub
-
-## 技能版本控制
-- [x] 技能编辑器增加版本控制功能 → 提交到 GitHub
-- [x] 查看技能变更历史 → 提交到 GitHub
-- [x] 对比不同版本的技能差异 → 提交到 GitHub
-- [x] 回滚到之前的版本 → 提交到 GitHub
-
-# New Feature Requests - Round 4
-
-## AgentRun 真实 LLM 前端
-- [x] AgentRun 前端调用 agentChat.send tRPC API 实现真实对话 → 提交到 GitHub
-- [x] 支持用户 API Key 和内置 LLM 双模式 → 提交到 GitHub
-- [x] 任务调度：根据技能角色分派指令并显示状态 → 提交到 GitHub
-
-## Model API Key 配置弹窗
-- [x] 每个模型名称右边添加“配置按钮”，点击弹出配置弹窗 → 提交到 GitHub
-- [x] 不同模型使用特定的配置内容（API Key、Base URL、Organization ID 等）→ 提交到 GitHub
-- [x] 配置弹窗中支持验证 API Key → 提交到 GitHub
-- [x] 模型右边显示配置状态：Required / Not Completed / Configured → 提交到 GitHub
-
-## Agent Summary 下拉框优化
-- [x] 下拉框搜索上方添加“All / 收藏 / 自创”标签筛选 → 提交到 GitHub
-- [x] 下拉框底部 "Browse All Skills" 点击后出现全屏弹窗，支持多选和搜索 → 提交到 GitHub
-- [x] 下拉框底部 "Browse All Models" 点击后出现全屏弹窗，支持多选和搜索 → 提交到 GitHub
-
-## 用户个人主页
-- [x] 创建 UserProfile 页面 → 提交到 GitHub
-- [x] 展示用户创建的技能列表 → 提交到 GitHub
-- [x] 展示用户收藏的技能列表 → 提交到 GitHub
-- [x] 展示用户创建的 Agent 列表 → 提交到 GitHub
-
-## 技能版本控制
-- [x] 技能编辑器版本控制功能 → 提交到 GitHub
-- [x] 查看技能变更历史 → 提交到 GitHub
-- [x] 对比不同版本差异 → 提交到 GitHub
-- [x] 回滚到之前版本 → 提交到 GitHub
+## 外部优质 Skills 生态接入 (External Skills Integration)
+- [x] 批量解析与迁移以下主流开源 AI 平台的优质 Skills 资产至本地的 `skills-repository`：
+  - OpenAI Skills (https://github.com/openai/skills)
+  - Anthropics Skills (https://github.com/anthropics/skills)
+  - Vercel Labs Skills (https://github.com/vercel-labs/skills)
+  - Hugging Face Skills (https://github.com/huggingface/skills)
+  - Awesome OpenClaw Skills (https://github.com/VoltAgent/awesome-openclaw-skills/tree/main/categories)
+  - Obra Superpowers (https://github.com/obra/superpowers)

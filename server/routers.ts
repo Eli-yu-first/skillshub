@@ -9,7 +9,7 @@ import {
   getSkillFiles, getSkillCommits, getSkillsByCategoryId,
   getContexts, getTrendingContexts,
   getPlaygrounds, getTrendingPlaygrounds,
-  getDiscussions,
+  getDiscussions, createDiscussion,
   getOrganizations,
   getAgents,
   getBlogPosts,
@@ -201,6 +201,17 @@ export const appRouter = router({
     list: publicProcedure
       .input(z.object({ targetType: z.string(), targetId: z.number() }))
       .query(({ input }) => getDiscussions(input.targetType, input.targetId)),
+    create: protectedProcedure
+      .input(z.object({
+        targetType: z.string(),
+        targetId: z.number(),
+        title: z.string().min(1),
+        content: z.string().min(1)
+      }))
+      .mutation(({ ctx, input }) => createDiscussion({
+        userId: ctx.user.id,
+        ...input
+      })),
   }),
 
   // Organizations

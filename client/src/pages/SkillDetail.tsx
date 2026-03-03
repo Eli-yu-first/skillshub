@@ -194,6 +194,10 @@ export default function SkillDetail() {
   const [copied, setCopied] = useState(false);
   const [selectedFile, setSelectedFile] = useState<FileNode | null>(null);
 
+  const [isCreatingDiscussion, setIsCreatingDiscussion] = useState(false);
+  const [newDiscussionTitle, setNewDiscussionTitle] = useState('');
+  const [newDiscussionContent, setNewDiscussionContent] = useState('');
+
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewComment, setReviewComment] = useState('');
   const [hoverRating, setHoverRating] = useState(0);
@@ -274,6 +278,16 @@ export default function SkillDetail() {
       toast.success('Review submitted!');
     },
     onError: () => toast.error('Failed to submit review'),
+  });
+  const createDiscussionMutation = trpc.discussions.create.useMutation({
+    onSuccess: () => {
+      utils.discussions.list.invalidate({ targetType: 'skill', targetId: skill?.id || 0 });
+      setNewDiscussionTitle('');
+      setNewDiscussionContent('');
+      setIsCreatingDiscussion(false);
+      toast.success('Discussion created successfully!');
+    },
+    onError: () => toast.error('Failed to create discussion: please login first'),
   });
   const forkMutation = trpc.skills.fork.useMutation({
     onSuccess: (data) => {
@@ -516,42 +530,52 @@ export default function SkillDetail() {
             {/* Files Tab */}
             {activeTab === 'files' && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                {selectedFile ? (
-                  <div>
-                    <div className="flex items-center gap-2 mb-4">
-                      <button onClick={() => setSelectedFile(null)} className="text-sm text-primary hover:underline">← Back to files</button>
-                      <span className="text-sm text-muted-foreground">/ {selectedFile.name}</span>
-                    </div>
-                    <div className="border border-border rounded-lg overflow-hidden">
-                      <div className="flex items-center justify-between px-4 py-2 bg-muted/30 border-b border-border">
-                        <span className="text-sm font-medium">{selectedFile.name}</span>
-                        <span className="text-xs text-muted-foreground">{formatFileSize(selectedFile.size)}</span>
-                      </div>
-                      <pre className="p-4 text-sm font-mono overflow-x-auto bg-background">
-                        <code>{selectedFile.content || '// No content available'}</code>
-                      </pre>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="border border-border rounded-lg overflow-hidden">
-                    <div className="flex items-center justify-between px-4 py-3 bg-muted/30 border-b border-border">
+                <div className="border border-border rounded-lg overflow-hidden flex flex-col md:flex-row h-[600px] bg-card">
+                  {/* Left Sidebar: File Tree */}
+                  <div className="md:w-64 border-b md:border-b-0 md:border-r border-border flex flex-col items-stretch overflow-hidden">
+                    <div className="px-4 py-3 bg-muted/40 border-b border-border flex items-center justify-between shadow-sm z-10">
                       <div className="flex items-center gap-2 text-sm">
                         <GitBranch className="w-4 h-4 text-muted-foreground" />
-                        <span className="font-medium">main</span>
-                        {commits.length > 0 && (
-                          <>
-                            <span className="text-muted-foreground">·</span>
-                            <span className="text-muted-foreground truncate max-w-xs">{commits[0].message}</span>
-                          </>
-                        )}
+                        <span className="font-medium text-foreground">main</span>
                       </div>
-                      {commits.length > 0 && (
-                        <span className="text-xs text-muted-foreground">{formatTimeAgo(commits[0].createdAt)}</span>
-                      )}
                     </div>
-                    <FileTree nodes={fileTree} onFileClick={(f) => setSelectedFile(f)} />
+                    <div className="flex-1 overflow-y-auto py-2 group">
+                      <FileTree nodes={fileTree} onFileClick={(f) => setSelectedFile(f)} />
+                    </div>
                   </div>
-                )}
+
+                  {/* Right Panel: Content Viewer */}
+                  <div className="flex-1 flex flex-col overflow-hidden bg-background">
+                    {selectedFile ? (
+                      <>
+                        <div className="flex items-center justify-between px-4 py-3 bg-muted/20 border-b border-border">
+                          <div className="flex items-center gap-2">
+                            <File className="w-4 h-4 text-muted-foreground" />
+                            <span className="text-sm font-medium">{selectedFile.name}</span>
+                          </div>
+                          <span className="text-xs text-muted-foreground bg-muted/50 px-2 py-1 rounded">
+                            {formatFileSize(selectedFile.size)}
+                          </span>
+                        </div>
+                        <div className="flex-1 overflow-auto p-4">
+                          {(selectedFile.name.endsWith('.md') || selectedFile.name.endsWith('.mdx')) ? (
+                            <MarkdownRenderer content={selectedFile.content || ''} />
+                          ) : (
+                            <pre className="text-sm font-mono text-foreground whitespace-pre">
+                              <code>{selectedFile.content || '// Empty file'}</code>
+                            </pre>
+                          )}
+                        </div>
+                      </>
+                    ) : (
+                      <div className="flex-1 flex flex-col items-center justify-center text-muted-foreground p-6 text-center">
+                        <FolderOpen className="w-12 h-12 mb-4 opacity-20" />
+                        <p className="text-sm font-medium">No file selected.</p>
+                        <p className="text-xs mt-1">Select a file from the tree to view its content.</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </motion.div>
             )}
 
@@ -560,10 +584,47 @@ export default function SkillDetail() {
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="font-display font-semibold text-lg">Discussions ({discussions_.length})</h2>
-                  <Button size="sm" onClick={() => toast.info('Feature coming soon')}>New Discussion</Button>
+                  {!isCreatingDiscussion && (
+                     <Button size="sm" onClick={() => setIsCreatingDiscussion(true)}>New Discussion</Button>
+                  )}
                 </div>
-                {discussions_.length === 0 ? (
-                  <div className="text-center py-12 text-muted-foreground">
+
+                {isCreatingDiscussion && (
+                  <div className="border border-border rounded-xl p-5 bg-card mb-6 mb-8 shadow-sm">
+                    <h3 className="font-medium text-sm mb-4">Start a new discussion</h3>
+                    <input
+                      type="text"
+                      placeholder="Title of your discussion..."
+                      value={newDiscussionTitle}
+                      onChange={(e) => setNewDiscussionTitle(e.target.value)}
+                      className="w-full p-2.5 mb-3 rounded-lg border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+                    />
+                    <textarea
+                      placeholder="Describe what you want to discuss..."
+                      value={newDiscussionContent}
+                      onChange={(e) => setNewDiscussionContent(e.target.value)}
+                      className="w-full h-32 p-3 rounded-lg border border-border bg-background text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary/20"
+                    />
+                    <div className="flex justify-end gap-2 mt-4">
+                      <Button variant="ghost" size="sm" onClick={() => setIsCreatingDiscussion(false)}>Cancel</Button>
+                      <Button 
+                        size="sm" 
+                        disabled={!newDiscussionTitle.trim() || createDiscussionMutation.isPending}
+                        onClick={() => createDiscussionMutation.mutate({
+                          targetType: 'skill',
+                          targetId: skill.id,
+                          title: newDiscussionTitle,
+                          content: newDiscussionContent
+                        })}
+                      >
+                        {createDiscussionMutation.isPending ? 'Posting...' : 'Post Discussion'}
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {!isCreatingDiscussion && discussions_.length === 0 ? (
+                  <div className="text-center py-12 text-muted-foreground border border-dashed border-border rounded-xl mb-6">
                     <MessageSquare className="w-12 h-12 mx-auto mb-3 opacity-30" />
                     <p>No discussions yet. Be the first to start one!</p>
                   </div>

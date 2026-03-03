@@ -267,6 +267,22 @@ export async function getDiscussions(targetType: string, targetId: number) {
     .orderBy(desc(discussions.createdAt));
 }
 
+export async function createDiscussion(data: {
+  userId: number;
+  targetType: string;
+  targetId: number;
+  title: string;
+  content: string;
+}) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const [result] = await db.insert(discussions).values({
+    ...data,
+    targetType: data.targetType as any,
+  }).$returningId();
+  return result;
+}
+
 // ============================================================================
 // ORGANIZATIONS
 // ============================================================================
